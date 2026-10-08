@@ -1,0 +1,883 @@
+﻿{
+  "products": [
+    {
+      "id": "SKU-1016",
+      "name": "srfgf",
+      "category": "fsd",
+      "unit": "fdsf",
+      "price": 444,
+      "stock": 40,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1001",
+      "name": "Premium Roast Coffee Beans (1kg)",
+      "category": "Beverages",
+      "unit": "Carton (12 Bags)",
+      "price": 145,
+      "stock": 135,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1002",
+      "name": "Organic Green Tea Extract (100 bags)",
+      "category": "Beverages",
+      "unit": "Case (24 Boxes)",
+      "price": 96,
+      "stock": 14,
+      "reorderLevel": 25
+    },
+    {
+      "id": "SKU-1003",
+      "name": "Pure Sparkling Mineral Water 500ml",
+      "category": "Beverages",
+      "unit": "Tray (24 Bottles)",
+      "price": 22.5,
+      "stock": 240,
+      "reorderLevel": 50
+    },
+    {
+      "id": "SKU-1004",
+      "name": "Extra Virgin Olive Oil 1L",
+      "category": "Packaged Foods",
+      "unit": "Case (12 Bottles)",
+      "price": 118,
+      "stock": 60,
+      "reorderLevel": 15
+    },
+    {
+      "id": "SKU-1005",
+      "name": "Durum Wheat Semolina Pasta 500g",
+      "category": "Packaged Foods",
+      "unit": "Carton (20 Packs)",
+      "price": 34,
+      "stock": 110,
+      "reorderLevel": 30
+    },
+    {
+      "id": "SKU-1006",
+      "name": "Organic Basmati Long Grain Rice 5kg",
+      "category": "Packaged Foods",
+      "unit": "Bale (6 Bags)",
+      "price": 72.5,
+      "stock": 45,
+      "reorderLevel": 15
+    },
+    {
+      "id": "SKU-1007",
+      "name": "Canned San Marzano Tomatoes 800g",
+      "category": "Packaged Foods",
+      "unit": "Case (24 Cans)",
+      "price": 48,
+      "stock": 9,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1008",
+      "name": "Ultra Concentrated Laundry Liquid 3L",
+      "category": "Home Care",
+      "unit": "Case (4 Jugs)",
+      "price": 56,
+      "stock": 75,
+      "reorderLevel": 15
+    },
+    {
+      "id": "SKU-1009",
+      "name": "Antibacterial Surface Disinfectant 750ml",
+      "category": "Home Care",
+      "unit": "Box (12 Sprays)",
+      "price": 38.4,
+      "stock": 130,
+      "reorderLevel": 25
+    },
+    {
+      "id": "SKU-1010",
+      "name": "Biodegradable Dishwashing Gel 1L",
+      "category": "Home Care",
+      "unit": "Case (12 Bottles)",
+      "price": 42,
+      "stock": 5,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1011",
+      "name": "Moisturizing Shea Body Wash 500ml",
+      "category": "Personal Care",
+      "unit": "Case (12 Bottles)",
+      "price": 52,
+      "stock": 95,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1012",
+      "name": "Invigorating Daily Shampoo 400ml",
+      "category": "Personal Care",
+      "unit": "Case (12 Bottles)",
+      "price": 46.5,
+      "stock": 0,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1013",
+      "name": "Dark Chocolate Artisan Bars 100g",
+      "category": "Snacks & Sweets",
+      "unit": "Display (24 Bars)",
+      "price": 58,
+      "stock": 120,
+      "reorderLevel": 30
+    },
+    {
+      "id": "SKU-1014",
+      "name": "Roasted Salted Almonds 250g",
+      "category": "Snacks & Sweets",
+      "unit": "Box (16 Bags)",
+      "price": 64,
+      "stock": 0,
+      "reorderLevel": 15
+    },
+    {
+      "id": "SKU-1015",
+      "name": "Gluten-Free Sea Salt Crackers 150g",
+      "category": "Snacks & Sweets",
+      "unit": "Carton (18 Boxes)",
+      "price": 39.5,
+      "stock": 80,
+      "reorderLevel": 25
+    }
+  ],
+  "dealers": [
+    {
+      "id": "DLR-010",
+      "name": "ghannnnnnhj",
+      "contact": "jjkjkk",
+      "phone": "09889",
+      "location": "jj",
+      "terms": "Net 30"
+    },
+    {
+      "id": "DLR-01",
+      "name": "Apex Supermarket Chain",
+      "contact": "Marcus Vance",
+      "phone": "+1 (555) 234-8901",
+      "location": "North Metro Hub",
+      "terms": "Net 30"
+    },
+    {
+      "id": "DLR-02",
+      "name": "Silverline Wholesale Mart",
+      "contact": "Elena Rostova",
+      "phone": "+1 (555) 345-6712",
+      "location": "Downtown Central",
+      "terms": "Net 15"
+    },
+    {
+      "id": "DLR-03",
+      "name": "Golden Gate Retailers",
+      "contact": "David Chen",
+      "phone": "+1 (555) 456-1123",
+      "location": "Westside District",
+      "terms": "Net 30"
+    },
+    {
+      "id": "DLR-04",
+      "name": "Metro Cash & Carry",
+      "contact": "Sarah Jenkins",
+      "phone": "+1 (555) 567-8834",
+      "location": "East Industrial Park",
+      "terms": "Cash On Delivery"
+    },
+    {
+      "id": "DLR-05",
+      "name": "Sunrise Convenience Co.",
+      "contact": "Tariq Mansoor",
+      "phone": "+1 (555) 678-9945",
+      "location": "Airport Commercial Zone",
+      "terms": "Net 15"
+    },
+    {
+      "id": "DLR-06",
+      "name": "Prime Horizon Grocers",
+      "contact": "Chloe Bennett",
+      "phone": "+1 (555) 789-2256",
+      "location": "South Suburbs",
+      "terms": "Net 30"
+    },
+    {
+      "id": "DLR-07",
+      "name": "Oakridge Provisions",
+      "contact": "Samuel Adebayo",
+      "phone": "+1 (555) 890-3367",
+      "location": "Harbor Commercial Area",
+      "terms": "Net 15"
+    },
+    {
+      "id": "DLR-08",
+      "name": "Crestview General Store",
+      "contact": "Maria Santos",
+      "phone": "+1 (555) 901-4478",
+      "location": "Valley Town Center",
+      "terms": "Cash On Delivery"
+    },
+    {
+      "id": "DLR-09",
+      "name": "decent marketing",
+      "contact": "decent",
+      "phone": "fgg",
+      "location": "fgdg",
+      "terms": "Advance Payment"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-2026-117",
+      "date": "2026-10-08",
+      "invoice": "INV-8817",
+      "dealerName": "ghannnnnnhj",
+      "itemName": "srfgf",
+      "unit": "fdsf",
+      "unitPrice": 444,
+      "quantity": 10,
+      "totalDue": 4440,
+      "amountPaid": 509,
+      "balance": 3931,
+      "status": "Partial Payment"
+    },
+    {
+      "id": "ORD-2026-116",
+      "date": "2026-10-07",
+      "invoice": "INV-8816",
+      "dealerName": "decent marketing",
+      "itemName": "Invigorating Daily Shampoo 400ml",
+      "unit": "Case (12 Bottles)",
+      "unitPrice": 46.5,
+      "quantity": 100,
+      "totalDue": 4650,
+      "amountPaid": 1036,
+      "balance": 3614,
+      "status": "Partial Payment"
+    },
+    {
+      "id": "ORD-2026-101",
+      "date": "2026-09-02",
+      "invoice": "INV-8801",
+      "dealerName": "Apex Supermarket Chain",
+      "itemName": "Premium Roast Coffee Beans (1kg)",
+      "unit": "Carton (12 Bags)",
+      "unitPrice": 145,
+      "quantity": 25,
+      "totalDue": 3625,
+      "amountPaid": 3625,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-102",
+      "date": "2026-09-04",
+      "invoice": "INV-8802",
+      "dealerName": "Silverline Wholesale Mart",
+      "itemName": "Extra Virgin Olive Oil 1L",
+      "unit": "Case (12 Bottles)",
+      "unitPrice": 118,
+      "quantity": 30,
+      "totalDue": 3540,
+      "amountPaid": 3540,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-103",
+      "date": "2026-09-06",
+      "invoice": "INV-8803",
+      "dealerName": "Golden Gate Retailers",
+      "itemName": "Organic Basmati Long Grain Rice 5kg",
+      "unit": "Bale (6 Bags)",
+      "unitPrice": 72.5,
+      "quantity": 40,
+      "totalDue": 2900,
+      "amountPaid": 2686,
+      "balance": 214,
+      "status": "Partial Payment"
+    },
+    {
+      "id": "ORD-2026-104",
+      "date": "2026-09-09",
+      "invoice": "INV-8804",
+      "dealerName": "Metro Cash & Carry",
+      "itemName": "Ultra Concentrated Laundry Liquid 3L",
+      "unit": "Case (4 Jugs)",
+      "unitPrice": 56,
+      "quantity": 50,
+      "totalDue": 2800,
+      "amountPaid": 2800,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-105",
+      "date": "2026-09-12",
+      "invoice": "INV-8805",
+      "dealerName": "Sunrise Convenience Co.",
+      "itemName": "Pure Sparkling Mineral Water 500ml",
+      "unit": "Tray (24 Bottles)",
+      "unitPrice": 22.5,
+      "quantity": 80,
+      "totalDue": 1800,
+      "amountPaid": 1800,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-106",
+      "date": "2026-09-15",
+      "invoice": "INV-8806",
+      "dealerName": "Prime Horizon Grocers",
+      "itemName": "Organic Green Tea Extract (100 bags)",
+      "unit": "Case (24 Boxes)",
+      "unitPrice": 96,
+      "quantity": 20,
+      "totalDue": 1920,
+      "amountPaid": 1000,
+      "balance": 920,
+      "status": "Partial Payment"
+    },
+    {
+      "id": "ORD-2026-107",
+      "date": "2026-09-18",
+      "invoice": "INV-8807",
+      "dealerName": "Oakridge Provisions",
+      "itemName": "Durum Wheat Semolina Pasta 500g",
+      "unit": "Carton (20 Packs)",
+      "unitPrice": 34,
+      "quantity": 60,
+      "totalDue": 2040,
+      "amountPaid": 2040,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-108",
+      "date": "2026-09-20",
+      "invoice": "INV-8808",
+      "dealerName": "Crestview General Store",
+      "itemName": "Moisturizing Shea Body Wash 500ml",
+      "unit": "Case (12 Bottles)",
+      "unitPrice": 52,
+      "quantity": 35,
+      "totalDue": 1820,
+      "amountPaid": 1820,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-109",
+      "date": "2026-09-22",
+      "invoice": "INV-8809",
+      "dealerName": "Apex Supermarket Chain",
+      "itemName": "Dark Chocolate Artisan Bars 100g",
+      "unit": "Display (24 Bars)",
+      "unitPrice": 58,
+      "quantity": 45,
+      "totalDue": 2610,
+      "amountPaid": 2610,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-110",
+      "date": "2026-09-25",
+      "invoice": "INV-8810",
+      "dealerName": "Silverline Wholesale Mart",
+      "itemName": "Antibacterial Surface Disinfectant 750ml",
+      "unit": "Box (12 Sprays)",
+      "unitPrice": 38.4,
+      "quantity": 40,
+      "totalDue": 1536,
+      "amountPaid": 1536,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-111",
+      "date": "2026-09-27",
+      "invoice": "INV-8811",
+      "dealerName": "Golden Gate Retailers",
+      "itemName": "Premium Roast Coffee Beans (1kg)",
+      "unit": "Carton (12 Bags)",
+      "unitPrice": 145,
+      "quantity": 15,
+      "totalDue": 2175,
+      "amountPaid": 0,
+      "balance": 2175,
+      "status": "Pending / Unpaid"
+    },
+    {
+      "id": "ORD-2026-112",
+      "date": "2026-09-28",
+      "invoice": "INV-8812",
+      "dealerName": "Sunrise Convenience Co.",
+      "itemName": "Gluten-Free Sea Salt Crackers 150g",
+      "unit": "Carton (18 Boxes)",
+      "unitPrice": 39.5,
+      "quantity": 50,
+      "totalDue": 1975,
+      "amountPaid": 1000,
+      "balance": 975,
+      "status": "Partial Payment"
+    },
+    {
+      "id": "ORD-2026-113",
+      "date": "2026-09-30",
+      "invoice": "INV-8813",
+      "dealerName": "Prime Horizon Grocers",
+      "itemName": "Extra Virgin Olive Oil 1L",
+      "unit": "Case (12 Bottles)",
+      "unitPrice": 118,
+      "quantity": 25,
+      "totalDue": 2950,
+      "amountPaid": 0,
+      "balance": 2950,
+      "status": "Pending / Unpaid"
+    },
+    {
+      "id": "ORD-2026-114",
+      "date": "2026-10-02",
+      "invoice": "INV-8814",
+      "dealerName": "Metro Cash & Carry",
+      "itemName": "Pure Sparkling Mineral Water 500ml",
+      "unit": "Tray (24 Bottles)",
+      "unitPrice": 22.5,
+      "quantity": 100,
+      "totalDue": 2250,
+      "amountPaid": 2250,
+      "balance": 0,
+      "status": "Paid In Full"
+    },
+    {
+      "id": "ORD-2026-115",
+      "date": "2026-10-04",
+      "invoice": "INV-8815",
+      "dealerName": "Oakridge Provisions",
+      "itemName": "Invigorating Daily Shampoo 400ml",
+      "unit": "Case (12 Bottles)",
+      "unitPrice": 46.5,
+      "quantity": 30,
+      "totalDue": 1395,
+      "amountPaid": 700,
+      "balance": 695,
+      "status": "Partial Payment"
+    }
+  ],
+  "payments": [
+    {
+      "id": "PAY-2026-033",
+      "date": "2026-10-08",
+      "dealerName": "ghannnnnnhj",
+      "amount": 509,
+      "method": "Mobile Money",
+      "reference": "INV-8817",
+      "note": "Payment recorded on ORD-2026-117 (INV-8817)"
+    },
+    {
+      "id": "PAY-2026-032",
+      "date": "2026-10-07",
+      "dealerName": "decent marketing",
+      "amount": 36,
+      "method": "Mobile Money",
+      "reference": "kk",
+      "note": "boss"
+    },
+    {
+      "id": "PAY-2026-031",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 263,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "made with honor"
+    },
+    {
+      "id": "PAY-2026-030",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 26,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-029",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 27,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-028",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 27,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-027",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 27,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-026",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 27,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-025",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 28,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-024",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 28,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-023",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 28,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-022",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 28,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-021",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 29,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-020",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 29,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-019",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 29,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-018",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 30,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-017",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 30,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-016",
+      "date": "2026-10-07",
+      "dealerName": "Golden Gate Retailers",
+      "amount": 30,
+      "method": "Bank Transfer",
+      "reference": "",
+      "note": "Debt payment recorded on 2026-10-07"
+    },
+    {
+      "id": "PAY-2026-015",
+      "date": "2026-10-07",
+      "dealerName": "Apex Supermarket Chain",
+      "amount": 910,
+      "method": "Mobile Money",
+      "reference": "",
+      "note": "made with honor"
+    },
+    {
+      "id": "PAY-2026-014",
+      "date": "2026-10-07",
+      "dealerName": "Apex Supermarket Chain",
+      "amount": 200,
+      "method": "Mobile Money",
+      "reference": "",
+      "note": "made with honor"
+    },
+    {
+      "id": "PAY-2026-001",
+      "reference": "INV-8801",
+      "dealerName": "Apex Supermarket Chain",
+      "note": "Order payment for INV-8801",
+      "method": "Bank Transfer",
+      "date": "2026-09-02",
+      "amount": 3625
+    },
+    {
+      "id": "PAY-2026-002",
+      "reference": "INV-8802",
+      "dealerName": "Silverline Wholesale Mart",
+      "note": "Order payment for INV-8802",
+      "method": "Bank Transfer",
+      "date": "2026-09-04",
+      "amount": 3540
+    },
+    {
+      "id": "PAY-2026-003",
+      "reference": "INV-8803",
+      "dealerName": "Golden Gate Retailers",
+      "note": "Deposit payment for INV-8803",
+      "method": "Cheque #4491",
+      "date": "2026-09-06",
+      "amount": 2000
+    },
+    {
+      "id": "PAY-2026-004",
+      "reference": "INV-8804",
+      "dealerName": "Metro Cash & Carry",
+      "note": "Full COD payment",
+      "method": "Cash On Delivery",
+      "date": "2026-09-09",
+      "amount": 2800
+    },
+    {
+      "id": "PAY-2026-005",
+      "reference": "INV-8805",
+      "dealerName": "Sunrise Convenience Co.",
+      "note": "Payment for INV-8805",
+      "method": "Bank Transfer",
+      "date": "2026-09-12",
+      "amount": 1800
+    },
+    {
+      "id": "PAY-2026-006",
+      "reference": "INV-8806",
+      "dealerName": "Prime Horizon Grocers",
+      "note": "Partial settlement",
+      "method": "Bank Transfer",
+      "date": "2026-09-15",
+      "amount": 1000
+    },
+    {
+      "id": "PAY-2026-007",
+      "reference": "INV-8807",
+      "dealerName": "Oakridge Provisions",
+      "note": "Full invoice payment",
+      "method": "Bank Transfer",
+      "date": "2026-09-18",
+      "amount": 2040
+    },
+    {
+      "id": "PAY-2026-008",
+      "reference": "INV-8808",
+      "dealerName": "Crestview General Store",
+      "note": "Cash settlement",
+      "method": "Cash On Delivery",
+      "date": "2026-09-20",
+      "amount": 1820
+    },
+    {
+      "id": "PAY-2026-009",
+      "reference": "INV-8809",
+      "dealerName": "Apex Supermarket Chain",
+      "note": "Partial payment for chocolates",
+      "method": "Cheque #8812",
+      "date": "2026-09-22",
+      "amount": 1500
+    },
+    {
+      "id": "PAY-2026-010",
+      "reference": "INV-8810",
+      "dealerName": "Silverline Wholesale Mart",
+      "note": "Full invoice payment",
+      "method": "Bank Transfer",
+      "date": "2026-09-25",
+      "amount": 1536
+    },
+    {
+      "id": "PAY-2026-011",
+      "reference": "INV-8812",
+      "dealerName": "Sunrise Convenience Co.",
+      "note": "Partial payment",
+      "method": "Mobile Money",
+      "date": "2026-09-28",
+      "amount": 1000
+    },
+    {
+      "id": "PAY-2026-012",
+      "reference": "INV-8814",
+      "dealerName": "Metro Cash & Carry",
+      "note": "Full COD payment",
+      "method": "Cash On Delivery",
+      "date": "2026-10-02",
+      "amount": 2250
+    },
+    {
+      "id": "PAY-2026-013",
+      "reference": "INV-8815",
+      "dealerName": "Oakridge Provisions",
+      "note": "Partial payment for shampoo",
+      "method": "Bank Transfer",
+      "date": "2026-10-04",
+      "amount": 700
+    }
+  ],
+  "suppliers": [
+    {
+      "id": "SUP-01",
+      "name": "Volta Mills & Grains Ltd",
+      "contact": "Kofi Boateng",
+      "phone": "+233 24 555 1020",
+      "location": "Tema Heavy Industrial Area",
+      "terms": "Net 30",
+      "notes": "Major grains and rice importer"
+    },
+    {
+      "id": "SUP-02",
+      "name": "Gold Coast Beverage Bottlers",
+      "contact": "Akosua Danquah",
+      "phone": "+233 20 888 3040",
+      "location": "Spintex Road, Accra",
+      "terms": "Net 15",
+      "notes": "Beverage and coffee distributor"
+    },
+    {
+      "id": "SUP-03",
+      "name": "Atlantic Hygiene Imports",
+      "contact": "Ibrahim Salifu",
+      "phone": "+233 27 777 5060",
+      "location": "Takoradi Commercial Harbor",
+      "terms": "Cash On Delivery",
+      "notes": "Homecare and cleaning products supplier"
+    }
+  ],
+  "supplierPurchases": [
+    {
+      "id": "PUR-2026-001",
+      "date": "2026-09-26",
+      "supplierName": "Volta Mills & Grains Ltd",
+      "itemSku": "SKU-1006",
+      "itemName": "Organic Basmati Long Grain Rice 5kg",
+      "quantity": 100,
+      "unit": "Bale (6 Bags)",
+      "unitCost": 50,
+      "totalDue": 5000,
+      "amountPaid": 3000,
+      "balance": 2000,
+      "status": "Partial Payment",
+      "notes": "Batch #GR-8819 received in main warehouse"
+    },
+    {
+      "id": "PUR-2026-002",
+      "date": "2026-10-01",
+      "supplierName": "Gold Coast Beverage Bottlers",
+      "itemSku": "SKU-1001",
+      "itemName": "Premium Roast Coffee Beans (1kg)",
+      "quantity": 50,
+      "unit": "Carton (12 Bags)",
+      "unitCost": 110,
+      "totalDue": 5500,
+      "amountPaid": 5500,
+      "balance": 0,
+      "status": "Paid In Full",
+      "notes": "Full shipment paid upon delivery"
+    },
+    {
+      "id": "PUR-2026-003",
+      "date": "2026-10-04",
+      "supplierName": "Atlantic Hygiene Imports",
+      "itemSku": "SKU-1008",
+      "itemName": "Ultra Concentrated Laundry Liquid 3L",
+      "quantity": 40,
+      "unit": "Case (4 Jugs)",
+      "unitCost": 42,
+      "totalDue": 1680,
+      "amountPaid": 1000,
+      "balance": 680,
+      "status": "Partial Payment",
+      "notes": "Balance due in 10 days"
+    }
+  ],
+  "supplierPayments": [
+    {
+      "id": "SPAY-2026-004",
+      "date": "2026-10-08",
+      "supplierName": "Atlantic Hygiene Imports",
+      "amount": 680,
+      "method": "Mobile Money",
+      "reference": "",
+      "note": ""
+    },
+    {
+      "id": "SPAY-2026-001",
+      "date": "2026-09-28",
+      "supplierName": "Volta Mills & Grains Ltd",
+      "amount": 3000,
+      "method": "Bank Transfer",
+      "reference": "CHQ-8902",
+      "note": "Initial deposit for Basmati Rice batch #GR-8819"
+    },
+    {
+      "id": "SPAY-2026-002",
+      "date": "2026-10-01",
+      "supplierName": "Gold Coast Beverage Bottlers",
+      "amount": 5500,
+      "method": "Bank Transfer",
+      "reference": "FT-99120",
+      "note": "Full payment for Premium Coffee beans order"
+    },
+    {
+      "id": "SPAY-2026-003",
+      "date": "2026-10-04",
+      "supplierName": "Atlantic Hygiene Imports",
+      "amount": 1000,
+      "method": "Mobile Money",
+      "reference": "MOM-4821",
+      "note": "Cash down payment on delivery"
+    }
+  ]
+}

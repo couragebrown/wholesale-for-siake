@@ -1,0 +1,11 @@
+# Edge Application Profile / Cache
+app/data/app_profile/
+*.log
+
+# Temporary Office / Excel files
+~$*.xlsx
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
