@@ -311,6 +311,25 @@ try {
                     Send-Response $context "No statement currently ready for printing" "text/plain" 404
                 }
             }
+            elseif ($urlPath -in @("/logo.png", "/icon.png", "/favicon.ico", "/icon.ico") -or $urlPath.EndsWith(".png") -or $urlPath.EndsWith(".ico")) {
+                $reqFile = Join-Path $baseDir ($urlPath.TrimStart("/\"))
+                if (Test-Path $reqFile) {
+                    $bytes = [System.IO.File]::ReadAllBytes($reqFile)
+                    $ctype = if ($reqFile.EndsWith(".ico")) { "image/x-icon" } else { "image/png" }
+                    $response = $context.Response
+                    $response.StatusCode = 200
+                    $response.ContentType = $ctype
+                    $response.Headers.Add("Access-Control-Allow-Origin", "*")
+                    $response.Headers.Add("Cache-Control", "public, max-age=86400")
+                    $response.ContentLength64 = $bytes.Length
+                    if ($method -ne "HEAD") {
+                        $response.OutputStream.Write($bytes, 0, $bytes.Length)
+                    }
+                    $response.OutputStream.Close()
+                } else {
+                    Send-Response $context "File not found" "text/plain" 404
+                }
+            }
             elseif ($urlPath -eq "/api/data" -and $method -eq "GET") {
                 if (Test-Path $dataFile) {
                     $json = [System.IO.File]::ReadAllText($dataFile, [System.Text.Encoding]::UTF8)

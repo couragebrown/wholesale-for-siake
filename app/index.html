@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Siaka Wholesale Flow - PC Manager</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="256x256" href="/logo.png">
+  <link rel="apple-touch-icon" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -219,6 +222,162 @@
     .kpi-info h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); font-weight: 600; margin-bottom: 0.25rem; }
     .kpi-info .val { font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
     .kpi-info .sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+    /* Dashboard Date Range Filter Bar */
+    .dash-filter-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.4rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .dash-filter-left {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    .dash-filter-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #eff6ff;
+      color: #2563eb;
+      display: grid;
+      place-items: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+    .dash-filter-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .dash-filter-sub {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+    .dash-filter-controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+    .dash-filter-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #f8fafc;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .dash-filter-input-wrap label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .dash-filter-input-wrap input[type="date"] {
+      border: none;
+      background: transparent;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      padding: 0.15rem 0.25rem;
+      outline: none;
+      font-family: inherit;
+    }
+    .dash-preset-group {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .dash-preset-btn {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .dash-preset-btn:hover {
+      background: #f1f5f9;
+      color: var(--text-main);
+      border-color: #cbd5e1;
+    }
+    .dash-preset-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 1px 3px rgba(79, 70, 229, 0.3);
+    }
+    .quick-type-btn {
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .quick-type-btn:hover {
+      background: #f1f5f9;
+      color: var(--text-main);
+      border-color: #cbd5e1;
+    }
+    .quick-type-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 1px 3px rgba(79, 70, 229, 0.3);
+      font-weight: 700;
+    }
+    .dash-filter-banner {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.55rem 0.9rem;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .dash-filter-banner.is-filtered {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1e40af;
+    }
+    .dash-trx-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      border-radius: 6px;
+      transition: background 0.12s ease;
+    }
+    .dash-trx-item:hover {
+      background: #f8fafc;
+    }
 
     /* Dashboard Split Section */
     .dash-split {
@@ -614,10 +773,10 @@
   <!-- Top Navigation -->
   <header>
     <div class="brand">
-      <div class="brand-icon">📦</div>
+      <img src="/logo.png" alt="Siaka Wholesale Flow Logo" style="height:46px; width:46px; object-fit:contain; border-radius:10px; background:white; padding:2px; border:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(0,0,0,0.06); flex-shrink:0;">
       <div>
         <h1>Siaka Wholesale Flow</h1>
-        <p>Clean Wholesale, Dealer & Payment Manager</p>
+        <p>More Products. Brighter Possibilities.</p>
       </div>
     </div>
     <div class="header-actions">
@@ -648,13 +807,53 @@
 
     <!-- 1. DASHBOARD VIEW -->
     <div id="tab-dashboard" class="tab-content active">
+      <!-- Date Range Filter Bar -->
+      <div class="dash-filter-card">
+        <div class="dash-filter-left">
+          <div class="dash-filter-icon">📅</div>
+          <div>
+            <div class="dash-filter-title">Date Range Filter</div>
+            <div class="dash-filter-sub">Filter totals, orders, payments, and activity between specific dates</div>
+          </div>
+        </div>
+
+        <div class="dash-filter-controls">
+          <div class="dash-preset-group">
+            <button type="button" class="dash-preset-btn active" id="preset-all" onclick="setDashboardDatePreset('all')">All Time</button>
+            <button type="button" class="dash-preset-btn" id="preset-today" onclick="setDashboardDatePreset('today')">Today</button>
+            <button type="button" class="dash-preset-btn" id="preset-week" onclick="setDashboardDatePreset('week')">This Week</button>
+            <button type="button" class="dash-preset-btn" id="preset-month" onclick="setDashboardDatePreset('month')">This Month</button>
+            <button type="button" class="dash-preset-btn" id="preset-last30" onclick="setDashboardDatePreset('last30')">Last 30 Days</button>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+            <div class="dash-filter-input-wrap">
+              <label for="dash-date-from">From</label>
+              <input type="date" id="dash-date-from" onchange="onDashboardDateInputChange()">
+            </div>
+            <span style="color:var(--text-muted); font-size:0.8rem; font-weight:700;">→</span>
+            <div class="dash-filter-input-wrap">
+              <label for="dash-date-to">To</label>
+              <input type="date" id="dash-date-to" onchange="onDashboardDateInputChange()">
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="clearDashboardDateFilter()" style="padding:0.42rem 0.75rem;" title="Reset filter to All Time">✕ Reset</button>
+          </div>
+        </div>
+
+        <!-- Filter Status Summary Banner -->
+        <div class="dash-filter-banner" id="dash-filter-banner">
+          <div id="dash-banner-text">Showing <strong>All Time</strong> data across the whole system.</div>
+          <div id="dash-banner-stats" style="font-size:0.75rem; font-weight:700; color:var(--text-muted);"></div>
+        </div>
+      </div>
+
       <div class="kpi-grid">
         <div class="kpi-card">
           <div class="kpi-icon" style="background:#eef2ff; color:#4f46e5;">💰</div>
           <div class="kpi-info">
             <h3>Total Sales Billed</h3>
             <div class="val" id="kpi-revenue">GH₵ 0.00</div>
-            <div class="sub">Across all lifetime orders</div>
+            <div class="sub" id="kpi-revenue-sub">Across all lifetime orders</div>
           </div>
         </div>
         <div class="kpi-card">
@@ -662,13 +861,16 @@
           <div class="kpi-info">
             <h3>Total Cash Collected</h3>
             <div class="val" id="kpi-collected">GH₵ 0.00</div>
-            <div class="sub">All payments recorded</div>
+            <div class="sub" id="kpi-collected-sub">All payments recorded</div>
           </div>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card" onclick="viewOnlyOwingDealers()" style="cursor:pointer;" title="Click to view all dealers with outstanding debt">
           <div class="kpi-icon" style="background:#fef2f2; color:#ef4444;">⚠️</div>
-          <div class="kpi-info">
-            <h3>Outstanding Debt</h3>
+          <div class="kpi-info" style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3>Outstanding Debt</h3>
+              <span class="badge badge-unpaid" style="font-size:0.62rem; padding:0.15rem 0.45rem;">Debtors ➔</span>
+            </div>
             <div class="val" id="kpi-debt" style="color:#ef4444;">GH₵ 0.00</div>
             <div class="sub" id="kpi-debt-count">0 dealers owe balance</div>
           </div>
@@ -678,7 +880,7 @@
           <div class="kpi-info">
             <h3>Total Orders</h3>
             <div class="val" id="kpi-orders-count">0</div>
-            <div class="sub" id="kpi-dealers-count">0 registered dealers</div>
+            <div class="sub" id="kpi-orders-sub">0 registered dealers</div>
           </div>
         </div>
         <div class="kpi-card" onclick="switchTab('suppliers')" style="cursor:pointer;" title="View all suppliers and payables">
@@ -692,30 +894,69 @@
       </div>
 
       <div class="dash-split">
-        <!-- Quick Dealer Statement & Payment History Lookup -->
+        <!-- Quick Dealer & Supplier Account Statement & Balance Check -->
         <div class="panel">
           <div class="panel-header">
-            <h2>🔍 Dealer Account & Payment Check</h2>
-            <button class="btn btn-secondary btn-sm" onclick="openPaymentModal()">+ Record Payment</button>
+            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              <h2>🔍 Account & Balance Check</h2>
+              <span id="quick-entity-type-badge" class="badge" style="background:#f1f5f9; color:#475569; font-size:0.7rem; font-weight:700;">Dealers & Suppliers</span>
+            </div>
+            <div style="display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="openPaymentModal()" title="Record payment received from a dealer">+ Dealer Pay</button>
+              <button class="btn btn-secondary btn-sm" onclick="openSupplierPaymentModal()" title="Record payment made to a supplier">+ Supplier Pay</button>
+            </div>
           </div>
-          <div class="form-group" style="margin-bottom:1rem;">
-            <label>Select Any Dealer to View Balance & Payments:</label>
-            <select id="quick-dealer-select" onchange="renderDealerQuickCheck()">
-              <option value="">-- Choose a Dealer --</option>
-            </select>
+
+          <div style="margin-bottom:0.85rem;">
+            <!-- Filter Pills for Type (All / Dealers / Suppliers) -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.55rem; flex-wrap:wrap; gap:0.4rem;">
+              <div class="dash-preset-group">
+                <button type="button" class="quick-type-btn active" id="quick-filter-all" onclick="setQuickEntityType('all')">All Accounts</button>
+                <button type="button" class="quick-type-btn" id="quick-filter-dealer" onclick="setQuickEntityType('dealer')">👥 Dealers</button>
+                <button type="button" class="quick-type-btn" id="quick-filter-supplier" onclick="setQuickEntityType('supplier')">🏭 Suppliers</button>
+              </div>
+              <span id="quick-search-match-count" style="font-size:0.75rem; color:var(--text-muted); font-weight:600;"></span>
+            </div>
+
+            <!-- Live Search Bar -->
+            <div style="position:relative; margin-bottom:0.55rem;">
+              <input type="text" id="quick-entity-search" class="search-input" placeholder="Search dealer or supplier by name, phone, city, ID..." oninput="onQuickAccountSearch()" style="width:100%; padding-left:2.35rem; padding-right:2rem; font-size:0.85rem; border-radius:8px; border:1px solid var(--border); background:white;">
+              <span style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%); font-size:0.95rem; pointer-events:none; opacity:0.6;">🔍</span>
+              <button type="button" id="quick-search-clear-btn" onclick="clearQuickAccountSearch()" style="display:none; position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); border:none; background:none; cursor:pointer; color:var(--text-muted); font-size:0.9rem; font-weight:700;" title="Clear search">✕</button>
+            </div>
+
+            <!-- Dropdown Select (dynamically populated with matching dealers & suppliers) -->
+            <div class="form-group" style="margin-bottom:0;">
+              <select id="quick-dealer-select" onchange="onQuickAccountDropdownChange()" style="width:100%; font-size:0.85rem; font-weight:600; padding:0.5rem 0.75rem; border-radius:8px; border:1px solid var(--border); background:white;">
+                <option value="">-- Choose or Search an Account --</option>
+              </select>
+            </div>
           </div>
+
           <div id="quick-dealer-card" style="background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:1.25rem;">
-            <p style="color:var(--text-muted); font-size:0.88rem;">Select a dealer above to instantly view their statement and payment history.</p>
+            <p style="color:var(--text-muted); font-size:0.88rem;">Search or select any dealer or supplier above to view live balance, transactions, and statements.</p>
           </div>
         </div>
 
-        <!-- Recent Orders Snapshot -->
+        <!-- Recent Orders & Transactions Snapshot -->
         <div class="panel">
           <div class="panel-header">
-            <h2>⏱️ Recent Wholesale Orders</h2>
-            <button class="btn btn-primary btn-sm" onclick="switchTab('new-order')">+ New Order</button>
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <h2>⏱️ Transactions & Orders</h2>
+              <span id="dash-trx-count-badge" class="badge badge-paid" style="font-size:0.7rem; padding:0.2rem 0.5rem;">0 Items</span>
+            </div>
+            <div style="display:flex; gap:0.4rem; align-items:center;">
+              <select id="dash-trx-type" onchange="renderRecentOrders()" style="font-size:0.78rem; padding:0.3rem 0.5rem; border-radius:6px; border:1px solid var(--border); background:white;">
+                <option value="all">All Transactions</option>
+                <option value="unpaid">⚠️ Unpaid / Owing Orders</option>
+                <option value="orders">Orders Only</option>
+                <option value="payments">Dealer Payments Only</option>
+                <option value="suppliers">Supplier Restocks & Payments</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="switchTab('new-order')">+ New Order</button>
+            </div>
           </div>
-          <div id="recent-orders-list">
+          <div id="recent-orders-list" style="max-height: 480px; overflow-y: auto; padding-right: 0.25rem;">
             <!-- Dynamically populated -->
           </div>
         </div>
@@ -817,12 +1058,27 @@
     <!-- 3. DEALERS & DEBT VIEW -->
     <div id="tab-dealers" class="tab-content">
       <div class="table-container">
-        <div class="table-toolbar">
-          <input type="text" class="search-input" id="search-dealer" placeholder="🔍 Search dealers by name or city..." oninput="renderDealersTable()">
-          <div style="display:flex; gap:0.5rem;">
+        <div class="table-toolbar" style="flex-wrap: wrap; gap: 0.75rem;">
+          <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; flex:1; min-width:280px;">
+            <input type="text" class="search-input" id="search-dealer" placeholder="🔍 Search dealers by name or city..." oninput="renderDealersTable()" style="max-width:320px;">
+            <select id="filter-dealer-debt" onchange="renderDealersTable()" style="padding:0.48rem 0.85rem; border-radius:6px; border:1px solid var(--border); font-size:0.82rem; font-weight:700; background:white; color:var(--text-main); cursor:pointer;">
+              <option value="all">👥 All Dealers</option>
+              <option value="owing">⚠️ Debtors Only (Owing Balance)</option>
+              <option value="clear">✅ Account Clear (GH₵ 0.00)</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
             <button class="btn btn-secondary btn-sm" onclick="openPaymentModal()">💵 Record Payment</button>
             <button class="btn btn-primary btn-sm" onclick="openAddDealerModal()">+ Add New Dealer</button>
           </div>
+        </div>
+
+        <!-- Active Debt Filter Alert Banner -->
+        <div id="dealer-debt-filter-banner" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:0.65rem 1rem; margin-bottom:1rem; justify-content:space-between; align-items:center; color:#991b1b; font-size:0.84rem; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            ⚠️ <strong>Debtors Filter Active:</strong> Showing only dealers who currently owe an outstanding debt (<strong id="banner-owing-count">0</strong> dealers owing <strong id="banner-owing-sum">GH₵ 0.00</strong>).
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="resetDealerDebtFilter()" style="padding:0.3rem 0.75rem; font-size:0.75rem; background:white; color:#991b1b; font-weight:700; border-color:#fca5a5;">Show All Dealers</button>
         </div>
         <div class="table-responsive" id="scroll-wrap-dealers">
           <table style="width: 100%; min-width: 1060px;">
@@ -1503,6 +1759,20 @@
       document.getElementById('pay-date').valueAsDate = new Date();
       if (document.getElementById('spur-date')) document.getElementById('spur-date').valueAsDate = new Date();
       if (document.getElementById('spay-date')) document.getElementById('spay-date').valueAsDate = new Date();
+
+      // Support initial URL filter params (e.g., ?from=2026-10-01&to=2026-10-08)
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('from') || params.get('to')) {
+        dashDateFilter.from = params.get('from') || '';
+        dashDateFilter.to = params.get('to') || '';
+        dashDateFilter.preset = 'custom';
+        const elFrom = document.getElementById('dash-date-from');
+        const elTo = document.getElementById('dash-date-to');
+        if (elFrom) elFrom.value = dashDateFilter.from;
+        if (elTo) elTo.value = dashDateFilter.to;
+        updatePresetButtonStyles();
+      }
+
       loadData();
     });
 
@@ -1517,6 +1787,20 @@
           if (!db.supplierPurchases) db.supplierPurchases = [];
           if (!db.supplierPayments) db.supplierPayments = [];
           renderAll();
+          const p = new URLSearchParams(window.location.search);
+          if (p.get('filter') === 'owing') {
+            viewOnlyOwingDealers();
+          }
+          if (p.get('type')) {
+            setQuickEntityType(p.get('type'));
+          }
+          if (p.get('search')) {
+            const searchInput = document.getElementById('quick-entity-search');
+            if (searchInput) {
+              searchInput.value = p.get('search');
+              onQuickAccountSearch();
+            }
+          }
         }
       } catch (err) {
         console.warn('API load failed, using local storage fallback', err);
@@ -1528,6 +1812,20 @@
           if (!db.supplierPurchases) db.supplierPurchases = [];
           if (!db.supplierPayments) db.supplierPayments = [];
           renderAll();
+          const p = new URLSearchParams(window.location.search);
+          if (p.get('filter') === 'owing') {
+            viewOnlyOwingDealers();
+          }
+          if (p.get('type')) {
+            setQuickEntityType(p.get('type'));
+          }
+          if (p.get('search')) {
+            const searchInput = document.getElementById('quick-entity-search');
+            if (searchInput) {
+              searchInput.value = p.get('search');
+              onQuickAccountSearch();
+            }
+          }
         }
       }
     }
@@ -1580,52 +1878,243 @@
       renderDealerQuickCheck();
     }
 
-    // 1. KPIs
-    function renderKPIs() {
-      let totalRevenue = 0;
-      let totalPaid = 0;
-      let totalBalance = 0;
+    // Dashboard Date Range Filter State
+    let dashDateFilter = {
+      from: '',
+      to: '',
+      preset: 'all'
+    };
 
-      // Calculate Dealer Debts
-      const dealerStats = {};
-      (db.dealers || []).forEach(d => {
-        dealerStats[d.name] = { purchased: 0, paid: 0, balance: 0 };
-      });
+    function isDateInRange(dateStr, from, to) {
+      if (!dateStr) return false;
+      const d = String(dateStr).substring(0, 10);
+      if (from && d < from) return false;
+      if (to && d > to) return false;
+      return true;
+    }
 
-      (db.orders || []).forEach(o => {
-        totalRevenue += Number(o.totalDue || 0);
-        totalPaid += Number(o.amountPaid || 0);
-        totalBalance += Number(o.balance || 0);
+    function formatIsoDate(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
 
-        if (!dealerStats[o.dealerName]) {
-          dealerStats[o.dealerName] = { purchased: 0, paid: 0, balance: 0 };
+    function setDashboardDatePreset(preset) {
+      dashDateFilter.preset = preset;
+      const now = new Date();
+      
+      if (preset === 'all') {
+        dashDateFilter.from = '';
+        dashDateFilter.to = '';
+      } else if (preset === 'today') {
+        const todayStr = formatIsoDate(now);
+        dashDateFilter.from = todayStr;
+        dashDateFilter.to = todayStr;
+      } else if (preset === 'week') {
+        const dayOfWeek = now.getDay();
+        const diffToMonday = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
+        const monday = new Date(now);
+        monday.setDate(now.getDate() + diffToMonday);
+        dashDateFilter.from = formatIsoDate(monday);
+        dashDateFilter.to = formatIsoDate(now);
+      } else if (preset === 'month') {
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        dashDateFilter.from = formatIsoDate(firstDay);
+        dashDateFilter.to = formatIsoDate(now);
+      } else if (preset === 'last30') {
+        const past30 = new Date(now);
+        past30.setDate(now.getDate() - 30);
+        dashDateFilter.from = formatIsoDate(past30);
+        dashDateFilter.to = formatIsoDate(now);
+      }
+
+      const elFrom = document.getElementById('dash-date-from');
+      const elTo = document.getElementById('dash-date-to');
+      if (elFrom) elFrom.value = dashDateFilter.from;
+      if (elTo) elTo.value = dashDateFilter.to;
+      updatePresetButtonStyles();
+      renderDashboardFilteredViews();
+    }
+
+    function onDashboardDateInputChange() {
+      const elFrom = document.getElementById('dash-date-from');
+      const elTo = document.getElementById('dash-date-to');
+      dashDateFilter.from = elFrom ? elFrom.value : '';
+      dashDateFilter.to = elTo ? elTo.value : '';
+      dashDateFilter.preset = 'custom';
+      updatePresetButtonStyles();
+      renderDashboardFilteredViews();
+    }
+
+    function clearDashboardDateFilter() {
+      setDashboardDatePreset('all');
+    }
+
+    function updatePresetButtonStyles() {
+      const presets = ['all', 'today', 'week', 'month', 'last30'];
+      presets.forEach(p => {
+        const btn = document.getElementById('preset-' + p);
+        if (btn) {
+          if (dashDateFilter.preset === p) btn.classList.add('active');
+          else btn.classList.remove('active');
         }
-        dealerStats[o.dealerName].purchased += Number(o.totalDue || 0);
-        dealerStats[o.dealerName].paid += Number(o.amountPaid || 0);
-        dealerStats[o.dealerName].balance += Number(o.balance || 0);
+      });
+    }
+
+    function updateDashboardFilterBanner(filteredOrders, filteredPayments, filteredPurchases, filteredSupPayments) {
+      const banner = document.getElementById('dash-filter-banner');
+      const bannerText = document.getElementById('dash-banner-text');
+      const bannerStats = document.getElementById('dash-banner-stats');
+      if (!banner || !bannerText || !bannerStats) return;
+
+      const isFiltered = !!(dashDateFilter.from || dashDateFilter.to);
+      if (isFiltered) {
+        banner.classList.add('is-filtered');
+        const fromLabel = dashDateFilter.from ? `<strong>${dashDateFilter.from}</strong>` : '<em>Beginning</em>';
+        const toLabel = dashDateFilter.to ? `<strong>${dashDateFilter.to}</strong>` : '<em>Present</em>';
+        bannerText.innerHTML = `📅 <strong>Filtered Period:</strong> ${fromLabel} ➔ ${toLabel}`;
+        bannerStats.innerHTML = `<span><strong>${filteredOrders.length}</strong> Orders</span> • <span><strong>${filteredPayments.length}</strong> Payments</span> • <span><strong>${filteredPurchases.length + filteredSupPayments.length}</strong> Restocks/Payables</span>`;
+      } else {
+        banner.classList.remove('is-filtered');
+        bannerText.innerHTML = `Showing <strong>All Time</strong> data across the whole system.`;
+        const totalTrx = (db.orders || []).length + (db.payments || []).length + (db.supplierPurchases || []).length + (db.supplierPayments || []).length;
+        bannerStats.innerHTML = `<span>${fmtNum(totalTrx)} Lifetime Transactions Total</span>`;
+      }
+    }
+
+    function renderDashboardFilteredViews() {
+      renderKPIs();
+      renderRecentOrders();
+      renderDealerQuickCheck();
+    }
+
+    // 1. KPIs (Supports Dynamic Date Range Filtering)
+    function renderKPIs() {
+      const isFiltered = !!(dashDateFilter.from || dashDateFilter.to);
+      const from = dashDateFilter.from;
+      const to = dashDateFilter.to;
+
+      // Filtered records
+      const filteredOrders = isFiltered
+        ? (db.orders || []).filter(o => isDateInRange(o.date, from, to))
+        : (db.orders || []);
+
+      const filteredPayments = isFiltered
+        ? (db.payments || []).filter(p => isDateInRange(p.date, from, to))
+        : (db.payments || []);
+
+      const filteredPurchases = isFiltered
+        ? (db.supplierPurchases || []).filter(p => isDateInRange(p.date, from, to))
+        : (db.supplierPurchases || []);
+
+      const filteredSupPayments = isFiltered
+        ? (db.supplierPayments || []).filter(p => isDateInRange(p.date, from, to))
+        : (db.supplierPayments || []);
+
+      // Calculate Sales Billed
+      let totalRevenue = 0;
+      filteredOrders.forEach(o => {
+        totalRevenue += Number(o.totalDue || 0);
       });
 
-      const dealersOwing = Object.values(dealerStats).filter(s => s.balance > 0.01).length;
+      // Calculate Cash Collected
+      let totalCollected = 0;
+      if (isFiltered) {
+        filteredPayments.forEach(p => {
+          totalCollected += Number(p.amount || 0);
+        });
+        filteredOrders.forEach(o => {
+          if (o.amountPaid > 0) {
+            const hasPaymentRecord = filteredPayments.some(p => (p.reference && p.reference === o.invoice) || (p.note && p.note.includes(o.id)));
+            if (!hasPaymentRecord) {
+              totalCollected += Number(o.amountPaid || 0);
+            }
+          }
+        });
+      } else {
+        (db.orders || []).forEach(o => {
+          totalCollected += Number(o.amountPaid || 0);
+        });
+      }
 
+      // Calculate Outstanding Debt & Dealers Owing
+      let totalDebt = 0;
+      let dealersOwingCount = 0;
+
+      if (isFiltered) {
+        filteredOrders.forEach(o => {
+          totalDebt += Number(o.balance || 0);
+        });
+        const owingDealersSet = new Set();
+        filteredOrders.filter(o => o.balance > 0.01).forEach(o => owingDealersSet.add(o.dealerName));
+        dealersOwingCount = owingDealersSet.size;
+      } else {
+        const dealerStats = {};
+        (db.dealers || []).forEach(d => {
+          dealerStats[d.name] = { purchased: 0, paid: 0, balance: 0 };
+        });
+        (db.orders || []).forEach(o => {
+          totalDebt += Number(o.balance || 0);
+          if (!dealerStats[o.dealerName]) {
+            dealerStats[o.dealerName] = { purchased: 0, paid: 0, balance: 0 };
+          }
+          dealerStats[o.dealerName].balance += Number(o.balance || 0);
+        });
+        dealersOwingCount = Object.values(dealerStats).filter(s => s.balance > 0.01).length;
+      }
+
+      // Calculate Supplier Payables / Restocks
+      let supplierStat = 0;
+      let supplierSubtext = '';
+      if (isFiltered) {
+        let totalRestockedInPeriod = 0;
+        let restockUnpaidInPeriod = 0;
+        filteredPurchases.forEach(sp => {
+          totalRestockedInPeriod += Number(sp.totalDue || 0);
+          restockUnpaidInPeriod += Number(sp.balance || 0);
+        });
+        supplierStat = totalRestockedInPeriod;
+        supplierSubtext = `${filteredPurchases.length} restock(s) in period (${fmtMoney(restockUnpaidInPeriod)} unpaid)`;
+      } else {
+        let totalSupplierPayable = 0;
+        let suppliersOwing = 0;
+        (db.suppliers || []).forEach(s => {
+          const bal = getSupplierBalance(s.name);
+          totalSupplierPayable += bal;
+          if (bal > 0.01) suppliersOwing++;
+        });
+        supplierStat = totalSupplierPayable;
+        supplierSubtext = `${(db.suppliers || []).length} suppliers (${suppliersOwing} owed)`;
+      }
+
+      // Update DOM elements
       document.getElementById('kpi-revenue').textContent = fmtMoney(totalRevenue);
-      document.getElementById('kpi-collected').textContent = fmtMoney(totalPaid);
-      document.getElementById('kpi-debt').textContent = fmtMoney(totalBalance);
-      document.getElementById('kpi-debt-count').textContent = `${dealersOwing} dealer(s) currently owe balance`;
-      document.getElementById('kpi-orders-count').textContent = fmtNum((db.orders || []).length);
-      document.getElementById('kpi-dealers-count').textContent = `${(db.dealers || []).length} registered dealers`;
+      const elRevSub = document.getElementById('kpi-revenue-sub');
+      if (elRevSub) elRevSub.textContent = isFiltered ? 'Billed in selected period' : 'Across all lifetime orders';
 
-      // Calculate Supplier Payables
-      let totalSupplierPayable = 0;
-      let suppliersOwingCount = 0;
-      (db.suppliers || []).forEach(s => {
-        const bal = getSupplierBalance(s.name);
-        totalSupplierPayable += bal;
-        if (bal > 0.01) suppliersOwingCount++;
-      });
+      document.getElementById('kpi-collected').textContent = fmtMoney(totalCollected);
+      const elColSub = document.getElementById('kpi-collected-sub');
+      if (elColSub) elColSub.textContent = isFiltered ? 'Cash collected in selected period' : 'All payments recorded';
+
+      document.getElementById('kpi-debt').textContent = fmtMoney(totalDebt);
+      document.getElementById('kpi-debt-count').textContent = isFiltered
+        ? `${dealersOwingCount} dealer(s) owe from period orders`
+        : `${dealersOwingCount} dealer(s) currently owe balance`;
+
+      document.getElementById('kpi-orders-count').textContent = fmtNum(filteredOrders.length);
+      const elOrdSub = document.getElementById('kpi-orders-sub');
+      if (elOrdSub) elOrdSub.textContent = isFiltered
+        ? `Orders placed in selected period`
+        : `${(db.dealers || []).length} registered dealers`;
+
       const elSupDebt = document.getElementById('kpi-supplier-debt');
-      if (elSupDebt) elSupDebt.textContent = fmtMoney(totalSupplierPayable);
+      if (elSupDebt) elSupDebt.textContent = fmtMoney(supplierStat);
       const elSupCount = document.getElementById('kpi-supplier-count');
-      if (elSupCount) elSupCount.textContent = `${(db.suppliers || []).length} suppliers (${suppliersOwingCount} owed)`;
+      if (elSupCount) elSupCount.textContent = supplierSubtext;
+
+      // Update Filter Status Banner
+      updateDashboardFilterBanner(filteredOrders, filteredPayments, filteredPurchases, filteredSupPayments);
     }
 
     // 2. Populate Select Dropdowns
@@ -1633,10 +2122,6 @@
       const ordDealer = document.getElementById('ord-dealer');
       const curOrdDealer = ordDealer.value;
       ordDealer.innerHTML = '<option value="">-- Select Dealer --</option>';
-      
-      const qDealer = document.getElementById('quick-dealer-select');
-      const curQDealer = qDealer.value;
-      qDealer.innerHTML = '<option value="">-- Choose a Dealer --</option>';
 
       const payDealer = document.getElementById('pay-dealer');
       const curPayDealer = payDealer.value;
@@ -1650,15 +2135,18 @@
 
       db.dealers.forEach(d => {
         ordDealer.add(new Option(d.name, d.name));
-        qDealer.add(new Option(d.name, d.name));
-        payDealer.add(new Option(d.name, d.name));
+        const bal = getDealerBalance(d.name);
+        payDealer.add(new Option(bal > 0.01 ? `${d.name} (Owes ${fmtMoney(bal)})` : d.name, d.name));
         if (filterPayDealer) filterPayDealer.add(new Option(d.name, d.name));
       });
 
       if (curOrdDealer) ordDealer.value = curOrdDealer;
-      if (curQDealer) qDealer.value = curQDealer;
       if (curPayDealer) payDealer.value = curPayDealer;
       if (filterPayDealer && curFilterPayDealer) filterPayDealer.value = curFilterPayDealer;
+
+      // Populate Quick Account Dropdown on Dashboard
+      const searchInput = document.getElementById('quick-entity-search');
+      populateQuickAccountDropdown(searchInput ? searchInput.value : '');
 
       // Products Dropdown
       const ordProduct = document.getElementById('ord-product');
@@ -1809,123 +2297,639 @@
       calculateOrderPreview();
     }
 
-    // 4. Quick Dealer Statement & Payments Check on Dashboard
-    function renderDealerQuickCheck() {
-      const name = document.getElementById('quick-dealer-select').value;
-      const box = document.getElementById('quick-dealer-card');
-      if (!name) {
-        box.innerHTML = `<p style="color:var(--text-muted); font-size:0.88rem;">Select a dealer above to instantly view their statement and payment history.</p>`;
-        return;
+    // 4. Quick Account (Dealer & Supplier) Statement & Balance Check on Dashboard
+    let quickEntityTypeFilter = 'all';
+
+    function setQuickEntityType(type) {
+      quickEntityTypeFilter = type;
+      document.querySelectorAll('.quick-type-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('quick-filter-' + type);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const badge = document.getElementById('quick-entity-type-badge');
+      if (badge) {
+        if (type === 'dealer') badge.textContent = '👥 Dealers Only';
+        else if (type === 'supplier') badge.textContent = '🏭 Suppliers Only';
+        else badge.textContent = 'Dealers & Suppliers';
       }
 
-      const dealer = db.dealers.find(d => d.name === name);
-      if (!dealer) return;
-
-      let purchased = 0;
-      let paid = 0;
-      let balance = 0;
-      let ordersCount = 0;
-
-      db.orders.forEach(o => {
-        if (o.dealerName === name) {
-          purchased += Number(o.totalDue || 0);
-          paid += Number(o.amountPaid || 0);
-          balance += Number(o.balance || 0);
-          ordersCount++;
-        }
-      });
-
-      const isClear = balance <= 0.01;
-      const dealerPayments = (db.payments || []).filter(p => p.dealerName === name).slice(0, 4);
-
-      let paymentsHtml = '';
-      if (dealerPayments.length > 0) {
-        paymentsHtml = `
-          <div style="margin-top:1rem; border-top:1px solid var(--border); padding-top:0.75rem;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-              <span style="font-size:0.8rem; font-weight:700; color:var(--text-main);">Recent Payments Recorded:</span>
-              <button class="btn btn-secondary btn-sm" onclick="viewDealerHistory('${dealer.name}')">View All (${(db.payments || []).filter(p => p.dealerName === name).length})</button>
-            </div>
-            <div style="font-size:0.8rem; background:white; border-radius:6px; border:1px solid var(--border); overflow:hidden;">
-              ${dealerPayments.map(p => `
-                <div style="display:flex; justify-content:space-between; padding:0.5rem 0.75rem; border-bottom:1px solid #f1f5f9;">
-                  <span><strong>${p.date}</strong> <span class="badge badge-method">${p.method}</span> <small style="color:var(--text-muted);">${p.reference || ''}</small></span>
-                  <span style="font-weight:800; color:#059669;">${fmtMoney(p.amount)}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      } else {
-        paymentsHtml = `
-          <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-muted); font-style:italic;">
-            No separate payments logged yet.
-          </div>
-        `;
-      }
-
-      box.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
-          <div>
-            <h3 style="font-size:1.1rem; font-weight:800; color:var(--text-main);">${dealer.name}</h3>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.2rem;">📍 ${dealer.location} • 👤 ${dealer.contact} • 📞 ${dealer.phone}</p>
-          </div>
-          <span class="badge ${isClear ? 'badge-paid' : 'badge-unpaid'}" style="font-size:0.8rem; padding:0.35rem 0.75rem;">
-            ${isClear ? '✅ Account Clear' : '⚠️ Outstanding Debt Due'}
-          </span>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.75rem; background:white; padding:0.85rem; border-radius:8px; border:1px solid var(--border); text-align:center;">
-          <div>
-            <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL BILLED</div>
-            <div style="font-size:1.1rem; font-weight:800; color:#1e1b4b;">${fmtMoney(purchased)}</div>
-          </div>
-          <div>
-            <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL PAID</div>
-            <div style="font-size:1.1rem; font-weight:800; color:#065f46;">${fmtMoney(paid)}</div>
-          </div>
-          <div>
-            <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">CURRENT BALANCE</div>
-            <div style="font-size:1.1rem; font-weight:800; color:#ef4444;">${fmtMoney(balance)}</div>
-          </div>
-        </div>
-        ${paymentsHtml}
-        <div style="margin-top:0.85rem; display:flex; justify-content:space-between; align-items:center;">
-          <button class="btn btn-secondary btn-sm" onclick="viewDealerHistory('${dealer.name}')">📜 Full Statement & History</button>
-          ${!isClear ? `<button class="btn btn-primary btn-sm" onclick="quickPayDealer('${dealer.name}', ${balance})">💵 Record Payment</button>` : ''}
-        </div>
-      `;
+      const searchInput = document.getElementById('quick-entity-search');
+      populateQuickAccountDropdown(searchInput ? searchInput.value : '');
     }
 
-    // 5. Recent Orders List on Dashboard
-    function renderRecentOrders() {
-      const container = document.getElementById('recent-orders-list');
-      const recent = db.orders.slice(0, 5);
+    function onQuickAccountSearch() {
+      const searchInput = document.getElementById('quick-entity-search');
+      const clearBtn = document.getElementById('quick-search-clear-btn');
+      const query = searchInput ? searchInput.value : '';
+      if (clearBtn) {
+        clearBtn.style.display = query ? 'block' : 'none';
+      }
+      populateQuickAccountDropdown(query);
+    }
 
-      if (recent.length === 0) {
-        container.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">No orders recorded yet.</p>`;
+    function clearQuickAccountSearch() {
+      const searchInput = document.getElementById('quick-entity-search');
+      const clearBtn = document.getElementById('quick-search-clear-btn');
+      if (searchInput) searchInput.value = '';
+      if (clearBtn) clearBtn.style.display = 'none';
+      populateQuickAccountDropdown('');
+    }
+
+    function onQuickAccountDropdownChange() {
+      renderDealerQuickCheck();
+    }
+
+    function populateQuickAccountDropdown(query = '') {
+      const select = document.getElementById('quick-dealer-select');
+      if (!select) return;
+
+      const q = (query || '').toLowerCase().trim();
+      const prevVal = select.value;
+
+      // Matching Dealers
+      const matchingDealers = (db.dealers || []).filter(d => {
+        if (quickEntityTypeFilter === 'supplier') return false;
+        if (!q) return true;
+        return (d.name && d.name.toLowerCase().includes(q)) ||
+               (d.contact && d.contact.toLowerCase().includes(q)) ||
+               (d.phone && d.phone.toLowerCase().includes(q)) ||
+               (d.location && d.location.toLowerCase().includes(q)) ||
+               (d.id && d.id.toLowerCase().includes(q));
+      });
+
+      // Matching Suppliers
+      const matchingSuppliers = (db.suppliers || []).filter(s => {
+        if (quickEntityTypeFilter === 'dealer') return false;
+        if (!q) return true;
+        return (s.name && s.name.toLowerCase().includes(q)) ||
+               (s.contact && s.contact.toLowerCase().includes(q)) ||
+               (s.phone && s.phone.toLowerCase().includes(q)) ||
+               (s.location && s.location.toLowerCase().includes(q)) ||
+               (s.id && s.id.toLowerCase().includes(q));
+      });
+
+      const totalMatches = matchingDealers.length + matchingSuppliers.length;
+      const countEl = document.getElementById('quick-search-match-count');
+      if (countEl) {
+        if (q) {
+          countEl.textContent = `${totalMatches} match${totalMatches === 1 ? '' : 'es'} found`;
+        } else if (quickEntityTypeFilter === 'dealer') {
+          countEl.textContent = `${(db.dealers || []).length} registered dealers`;
+        } else if (quickEntityTypeFilter === 'supplier') {
+          countEl.textContent = `${(db.suppliers || []).length} registered suppliers`;
+        } else {
+          countEl.textContent = `${(db.dealers || []).length} dealers • ${(db.suppliers || []).length} suppliers`;
+        }
+      }
+
+      select.innerHTML = '';
+      const defaultOpt = document.createElement('option');
+      defaultOpt.value = '';
+      if (totalMatches === 0) {
+        defaultOpt.textContent = '-- No matching accounts found --';
+      } else if (q) {
+        defaultOpt.textContent = `-- Choose from ${totalMatches} matching account(s) --`;
+      } else if (quickEntityTypeFilter === 'dealer') {
+        defaultOpt.textContent = '-- Choose a Dealer to Check --';
+      } else if (quickEntityTypeFilter === 'supplier') {
+        defaultOpt.textContent = '-- Choose a Supplier to Check --';
+      } else {
+        defaultOpt.textContent = '-- Choose a Dealer or Supplier to Check --';
+      }
+      select.appendChild(defaultOpt);
+
+      if (quickEntityTypeFilter === 'all') {
+        if (matchingDealers.length > 0) {
+          const groupD = document.createElement('optgroup');
+          groupD.label = `👥 Dealers (${matchingDealers.length})`;
+          matchingDealers.forEach(d => {
+            const bal = getDealerBalance(d.name);
+            const opt = document.createElement('option');
+            opt.value = `dealer:${d.name}`;
+            opt.textContent = `${d.name} — ${bal > 0.01 ? '⚠️ Owes ' + fmtMoney(bal) : '✅ Clear'}`;
+            groupD.appendChild(opt);
+          });
+          select.appendChild(groupD);
+        }
+
+        if (matchingSuppliers.length > 0) {
+          const groupS = document.createElement('optgroup');
+          groupS.label = `🏭 Suppliers (${matchingSuppliers.length})`;
+          matchingSuppliers.forEach(s => {
+            const bal = getSupplierBalance(s.name);
+            const opt = document.createElement('option');
+            opt.value = `supplier:${s.name}`;
+            opt.textContent = `${s.name} — ${bal > 0.01 ? '⚠️ Owed: ' + fmtMoney(bal) : '✅ Settled'}`;
+            groupS.appendChild(opt);
+          });
+          select.appendChild(groupS);
+        }
+      } else if (quickEntityTypeFilter === 'dealer') {
+        matchingDealers.forEach(d => {
+          const bal = getDealerBalance(d.name);
+          const opt = document.createElement('option');
+          opt.value = `dealer:${d.name}`;
+          opt.textContent = `${d.name} — ${bal > 0.01 ? '⚠️ Owes ' + fmtMoney(bal) : '✅ Clear'}`;
+          select.appendChild(opt);
+        });
+      } else if (quickEntityTypeFilter === 'supplier') {
+        matchingSuppliers.forEach(s => {
+          const bal = getSupplierBalance(s.name);
+          const opt = document.createElement('option');
+          opt.value = `supplier:${s.name}`;
+          opt.textContent = `${s.name} — ${bal > 0.01 ? '⚠️ Owed: ' + fmtMoney(bal) : '✅ Settled'}`;
+          select.appendChild(opt);
+        });
+      }
+
+      // Restore selection if still in filtered list
+      let reselected = false;
+      if (prevVal) {
+        for (let i = 0; i < select.options.length; i++) {
+          if (select.options[i].value === prevVal) {
+            select.selectedIndex = i;
+            reselected = true;
+            break;
+          }
+        }
+      }
+
+      // If active query and exactly 1 match, auto-select it!
+      if (!reselected && q && totalMatches === 1) {
+        if (matchingDealers.length === 1) {
+          select.value = `dealer:${matchingDealers[0].name}`;
+        } else if (matchingSuppliers.length === 1) {
+          select.value = `supplier:${matchingSuppliers[0].name}`;
+        }
+      }
+
+      renderDealerQuickCheck();
+    }
+
+    function renderDealerQuickCheck() {
+      const rawVal = document.getElementById('quick-dealer-select') ? document.getElementById('quick-dealer-select').value : '';
+      const box = document.getElementById('quick-dealer-card');
+      if (!box) return;
+
+      if (!rawVal) {
+        box.innerHTML = `
+          <div style="text-align:center; padding:1.25rem 0.5rem; color:var(--text-muted);">
+            <div style="font-size:2rem; margin-bottom:0.4rem;">🔍</div>
+            <p style="font-size:0.9rem; font-weight:700; color:var(--text-main); margin-bottom:0.25rem;">Search or select any account above</p>
+            <p style="font-size:0.78rem;">Instantly check live balances, transaction history, period activity, and statements for any dealer or supplier.</p>
+          </div>
+        `;
         return;
       }
 
-      container.innerHTML = recent.map(o => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.7rem 0; border-bottom:1px solid #f1f5f9;">
-          <div>
-            <div style="font-weight:700; font-size:0.88rem;">${o.dealerName}</div>
-            <div style="font-size:0.75rem; color:var(--text-muted);">${o.itemName} (${o.quantity} ${o.unit}) • ${o.date}</div>
+      let type = 'dealer';
+      let name = rawVal;
+      if (rawVal.startsWith('dealer:')) {
+        type = 'dealer';
+        name = rawVal.slice(7);
+      } else if (rawVal.startsWith('supplier:')) {
+        type = 'supplier';
+        name = rawVal.slice(9);
+      } else {
+        if ((db.suppliers || []).some(s => s.name === rawVal)) {
+          type = 'supplier';
+        }
+      }
+
+      const isFiltered = !!(dashDateFilter.from || dashDateFilter.to);
+      const safeName = (name || '').replace(/'/g, "\\'");
+
+      // ===========================
+      // DEALER STATEMENT CARD
+      // ===========================
+      if (type === 'dealer') {
+        const dealer = (db.dealers || []).find(d => d.name === name);
+        if (!dealer) {
+          box.innerHTML = `<p style="color:var(--text-muted); font-size:0.88rem;">Dealer "${name}" not found.</p>`;
+          return;
+        }
+
+        let purchased = 0;
+        let paid = 0;
+        let balance = 0;
+        let ordersCount = 0;
+
+        (db.orders || []).forEach(o => {
+          if (o.dealerName === name) {
+            purchased += Number(o.totalDue || 0);
+            paid += Number(o.amountPaid || 0);
+            balance += Number(o.balance || 0);
+            ordersCount++;
+          }
+        });
+
+        let periodPurchased = 0;
+        let periodPaid = 0;
+        let periodOrdersCount = 0;
+
+        if (isFiltered) {
+          (db.orders || []).forEach(o => {
+            if (o.dealerName === name && isDateInRange(o.date, dashDateFilter.from, dashDateFilter.to)) {
+              periodPurchased += Number(o.totalDue || 0);
+              periodOrdersCount++;
+            }
+          });
+          (db.payments || []).forEach(p => {
+            if (p.dealerName === name && isDateInRange(p.date, dashDateFilter.from, dashDateFilter.to)) {
+              periodPaid += Number(p.amount || 0);
+            }
+          });
+        }
+
+        const periodHtml = isFiltered ? `
+          <div style="margin-top:0.65rem; background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:0.5rem 0.75rem; font-size:0.78rem; color:#1e40af; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.25rem;">
+            <span>📅 <strong>Period Activity:</strong> ${periodOrdersCount} order(s)</span>
+            <span><strong>${fmtMoney(periodPurchased)}</strong> Billed • <strong>${fmtMoney(periodPaid)}</strong> Paid</span>
           </div>
-          <div style="text-align:right;">
-            <div style="font-weight:800; font-size:0.92rem;">${fmtMoney(o.totalDue)}</div>
-            <span class="badge ${getBadgeClass(o.status)}">${o.status}</span>
+        ` : '';
+
+        const isClear = balance <= 0.01;
+        const dealerPayments = (db.payments || []).filter(p => p.dealerName === name && (!isFiltered || isDateInRange(p.date, dashDateFilter.from, dashDateFilter.to))).slice(0, 4);
+
+        let paymentsHtml = '';
+        if (dealerPayments.length > 0) {
+          paymentsHtml = `
+            <div style="margin-top:1rem; border-top:1px solid var(--border); padding-top:0.75rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                <span style="font-size:0.8rem; font-weight:700; color:var(--text-main);">${isFiltered ? 'Payments in Filtered Period:' : 'Recent Payments Recorded:'}</span>
+                <button class="btn btn-secondary btn-sm" onclick="viewDealerHistory('${safeName}')">View All (${(db.payments || []).filter(p => p.dealerName === name).length})</button>
+              </div>
+              <div style="font-size:0.8rem; background:white; border-radius:6px; border:1px solid var(--border); overflow:hidden;">
+                ${dealerPayments.map(p => `
+                  <div style="display:flex; justify-content:space-between; padding:0.5rem 0.75rem; border-bottom:1px solid #f1f5f9;">
+                    <span><strong>${p.date}</strong> <span class="badge badge-method">${p.method}</span> <small style="color:var(--text-muted);">${p.reference || ''}</small></span>
+                    <span style="font-weight:800; color:#059669;">${fmtMoney(p.amount)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        } else {
+          paymentsHtml = `
+            <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-muted); font-style:italic;">
+              ${isFiltered ? 'No payments logged in selected period.' : 'No separate payments logged yet.'}
+            </div>
+          `;
+        }
+
+        box.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <span class="badge" style="background:#eff6ff; color:#1e40af; font-size:0.7rem; font-weight:700; border:1px solid #bfdbfe;">👥 DEALER</span>
+                <h3 style="font-size:1.1rem; font-weight:800; color:var(--text-main); display:inline;">${dealer.name}</h3>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">📍 ${dealer.location || '-'} • 👤 ${dealer.contact || '-'} • 📞 ${dealer.phone || '-'}</p>
+            </div>
+            <span class="badge ${isClear ? 'badge-paid' : 'badge-unpaid'}" style="font-size:0.8rem; padding:0.35rem 0.75rem;">
+              ${isClear ? '✅ Account Clear' : '⚠️ Outstanding Debt Due'}
+            </span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.75rem; background:white; padding:0.85rem; border-radius:8px; border:1px solid var(--border); text-align:center;">
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL BILLED</div>
+              <div style="font-size:1.1rem; font-weight:800; color:#1e1b4b;">${fmtMoney(purchased)}</div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL PAID</div>
+              <div style="font-size:1.1rem; font-weight:800; color:#065f46;">${fmtMoney(paid)}</div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">CURRENT BALANCE</div>
+              <div style="font-size:1.1rem; font-weight:800; color:${balance > 0.01 ? '#ef4444' : '#10b981'};">${fmtMoney(balance)}</div>
+            </div>
+          </div>
+          ${periodHtml}
+          ${paymentsHtml}
+          <div style="margin-top:0.85rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="viewDealerHistory('${safeName}')">📜 Full Statement & History</button>
+              <button class="btn btn-secondary btn-sm" onclick="currentViewingDealerName='${safeName}'; printDealerStatement();" title="Print official A4 dealer statement">🖨️ Print Statement</button>
+            </div>
+            ${!isClear ? `<button class="btn btn-primary btn-sm" onclick="quickPayDealer('${safeName}', ${balance})">💵 Record Payment</button>` : ''}
+          </div>
+        `;
+        return;
+      }
+
+      // ===========================
+      // SUPPLIER STATEMENT CARD
+      // ===========================
+      if (type === 'supplier') {
+        const supplier = (db.suppliers || []).find(s => s.name === name) || {
+          name: name, location: 'Warehouse Hub', contact: '-', phone: '-', terms: 'Net 30'
+        };
+
+        let totalPurchased = 0;
+        let totalPaid = 0;
+        let purchasesCount = 0;
+
+        (db.supplierPurchases || []).forEach(p => {
+          if (p.supplierName === name) {
+            totalPurchased += Number(p.totalDue || 0);
+            purchasesCount++;
+          }
+        });
+        (db.supplierPayments || []).forEach(py => {
+          if (py.supplierName === name) {
+            totalPaid += Number(py.amount || 0);
+          }
+        });
+        const balanceDue = Math.max(0, totalPurchased - totalPaid);
+        const isSettled = balanceDue <= 0.01;
+
+        let periodPurchased = 0;
+        let periodPaid = 0;
+        let periodPurchasesCount = 0;
+
+        if (isFiltered) {
+          (db.supplierPurchases || []).forEach(p => {
+            if (p.supplierName === name && isDateInRange(p.date, dashDateFilter.from, dashDateFilter.to)) {
+              periodPurchased += Number(p.totalDue || 0);
+              periodPurchasesCount++;
+            }
+          });
+          (db.supplierPayments || []).forEach(py => {
+            if (py.supplierName === name && isDateInRange(py.date, dashDateFilter.from, dashDateFilter.to)) {
+              periodPaid += Number(py.amount || 0);
+            }
+          });
+        }
+
+        const periodHtml = isFiltered ? `
+          <div style="margin-top:0.65rem; background:#fff7ed; border:1px solid #fed7aa; border-radius:6px; padding:0.5rem 0.75rem; font-size:0.78rem; color:#9a3412; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.25rem;">
+            <span>📅 <strong>Period Activity:</strong> ${periodPurchasesCount} restock(s)</span>
+            <span><strong>${fmtMoney(periodPurchased)}</strong> Stock Taken • <strong>${fmtMoney(periodPaid)}</strong> Paid</span>
+          </div>
+        ` : '';
+
+        const supplierPayments = (db.supplierPayments || []).filter(py => py.supplierName === name && (!isFiltered || isDateInRange(py.date, dashDateFilter.from, dashDateFilter.to))).slice(0, 4);
+
+        let paymentsHtml = '';
+        if (supplierPayments.length > 0) {
+          paymentsHtml = `
+            <div style="margin-top:1rem; border-top:1px solid var(--border); padding-top:0.75rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                <span style="font-size:0.8rem; font-weight:700; color:var(--text-main);">${isFiltered ? 'Supplier Payments in Period:' : 'Recent Supplier Payments Made:'}</span>
+                <button class="btn btn-secondary btn-sm" onclick="viewSupplierHistory('${safeName}')">View All (${(db.supplierPayments || []).filter(py => py.supplierName === name).length})</button>
+              </div>
+              <div style="font-size:0.8rem; background:white; border-radius:6px; border:1px solid var(--border); overflow:hidden;">
+                ${supplierPayments.map(py => `
+                  <div style="display:flex; justify-content:space-between; padding:0.5rem 0.75rem; border-bottom:1px solid #f1f5f9;">
+                    <span><strong>${py.date}</strong> <span class="badge badge-method">${py.method}</span> <small style="color:var(--text-muted);">${py.reference || ''}</small></span>
+                    <span style="font-weight:800; color:#059669;">${fmtMoney(py.amount)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        } else {
+          paymentsHtml = `
+            <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-muted); font-style:italic;">
+              ${isFiltered ? 'No supplier payments logged in selected period.' : 'No supplier payments logged yet.'}
+            </div>
+          `;
+        }
+
+        box.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <span class="badge" style="background:#fff7ed; color:#ea580c; font-size:0.7rem; font-weight:700; border:1px solid #fed7aa;">🏭 SUPPLIER</span>
+                <h3 style="font-size:1.1rem; font-weight:800; color:var(--text-main); display:inline;">${supplier.name}</h3>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">📍 ${supplier.location || '-'} • 👤 ${supplier.contact || '-'} • 📞 ${supplier.phone || '-'} • Terms: ${supplier.terms || 'Net 30'}</p>
+            </div>
+            <span class="badge ${isSettled ? 'badge-paid' : 'badge-unpaid'}" style="font-size:0.8rem; padding:0.35rem 0.75rem;">
+              ${isSettled ? '✅ Account Settled' : '⚠️ Outstanding Debt Owed'}
+            </span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.75rem; background:white; padding:0.85rem; border-radius:8px; border:1px solid var(--border); text-align:center;">
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL STOCK TAKEN</div>
+              <div style="font-size:1.1rem; font-weight:800; color:#1e1b4b;">${fmtMoney(totalPurchased)}</div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">TOTAL PAID OUT</div>
+              <div style="font-size:1.1rem; font-weight:800; color:#065f46;">${fmtMoney(totalPaid)}</div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">BALANCE WE OWE</div>
+              <div style="font-size:1.1rem; font-weight:800; color:${balanceDue > 0.01 ? '#dc2626' : '#10b981'};">${fmtMoney(balanceDue)}</div>
+            </div>
+          </div>
+          ${periodHtml}
+          ${paymentsHtml}
+          <div style="margin-top:0.85rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="viewSupplierHistory('${safeName}')">📜 Supplier History</button>
+              <button class="btn btn-secondary btn-sm" onclick="currentViewingSupplierName='${safeName}'; printSupplierStatement();" title="Print official supplier statement">🖨️ Print Statement</button>
+              <button class="btn btn-secondary btn-sm" onclick="openSupplierPurchaseModal('${safeName}')" title="Record incoming stock shipment">📦 Stock In</button>
+            </div>
+            ${!isSettled ? `<button class="btn btn-primary btn-sm" onclick="openSupplierPaymentModal('${safeName}', ${balanceDue})" title="Pay outstanding debt">💵 Pay Supplier</button>` : ''}
+          </div>
+        `;
+        return;
+      }
+    }
+
+    // 5. Unified Activity & Transactions Stream on Dashboard (Filters by Date Range & Type)
+    function renderRecentOrders() {
+      const container = document.getElementById('recent-orders-list');
+      if (!container) return;
+
+      const from = dashDateFilter.from;
+      const to = dashDateFilter.to;
+      const isFiltered = !!(from || to);
+      const typeFilterEl = document.getElementById('dash-trx-type');
+      const typeFilter = typeFilterEl ? typeFilterEl.value : 'all';
+
+      const items = [];
+
+      // 1. Wholesale Orders
+      if (typeFilter === 'all' || typeFilter === 'orders' || typeFilter === 'unpaid') {
+        (db.orders || []).forEach(o => {
+          const hasBalance = Number(o.balance || 0) > 0.01;
+          if (typeFilter === 'unpaid' && !hasBalance) return;
+          if (!isFiltered || isDateInRange(o.date, from, to)) {
+            items.push({
+              type: 'order',
+              date: o.date,
+              id: o.id,
+              title: o.dealerName,
+              subtitle: `Order #${o.id} • ${o.itemName} (${o.quantity} ${o.unit || 'units'})${hasBalance ? ' • ⚠️ Unpaid Debt: ' + fmtMoney(o.balance) : ''}`,
+              amount: Number(o.totalDue || 0),
+              amountFormatted: fmtMoney(o.totalDue),
+              status: o.status,
+              statusBadge: getBadgeClass(o.status),
+              icon: '📦',
+              iconBg: hasBalance ? '#fef2f2' : '#eef2ff',
+              iconColor: hasBalance ? '#ef4444' : '#4f46e5',
+              tag: hasBalance ? 'OWING ORDER' : 'ORDER'
+            });
+          }
+        });
+      }
+
+      // 2. Dealer Payments
+      if (typeFilter === 'all' || typeFilter === 'payments') {
+        (db.payments || []).forEach(p => {
+          if (!isFiltered || isDateInRange(p.date, from, to)) {
+            items.push({
+              type: 'payment',
+              date: p.date,
+              id: p.id,
+              title: p.dealerName,
+              subtitle: `Payment #${p.id} • ${p.method}${p.reference ? ' • Ref: ' + p.reference : ''}${p.note ? ' • ' + p.note : ''}`,
+              amount: Number(p.amount || 0),
+              amountFormatted: fmtMoney(p.amount),
+              status: 'Payment Received',
+              statusBadge: 'badge-paid',
+              icon: '💵',
+              iconBg: '#ecfdf5',
+              iconColor: '#059669',
+              tag: 'PAYMENT'
+            });
+          }
+        });
+      }
+
+      // 3. Supplier Restocks (Purchases) & Supplier Payments
+      if (typeFilter === 'all' || typeFilter === 'suppliers') {
+        (db.supplierPurchases || []).forEach(sp => {
+          if (!isFiltered || isDateInRange(sp.date, from, to)) {
+            items.push({
+              type: 'supplier_purchase',
+              date: sp.date,
+              id: sp.id,
+              title: sp.supplierName,
+              subtitle: `Stock In #${sp.id} • ${sp.itemName} (${sp.quantity} ${sp.unit || 'units'})`,
+              amount: Number(sp.totalDue || 0),
+              amountFormatted: fmtMoney(sp.totalDue),
+              status: sp.status || 'Stock Received',
+              statusBadge: sp.status === 'Paid In Full' ? 'badge-paid' : 'badge-partial',
+              icon: '🏭',
+              iconBg: '#fff7ed',
+              iconColor: '#ea580c',
+              tag: 'STOCK IN'
+            });
+          }
+        });
+
+        (db.supplierPayments || []).forEach(spay => {
+          if (!isFiltered || isDateInRange(spay.date, from, to)) {
+            items.push({
+              type: 'supplier_payment',
+              date: spay.date,
+              id: spay.id,
+              title: spay.supplierName,
+              subtitle: `Supplier Pay #${spay.id} • ${spay.method}${spay.reference ? ' • Ref: ' + spay.reference : ''}`,
+              amount: Number(spay.amount || 0),
+              amountFormatted: fmtMoney(spay.amount),
+              status: 'Supplier Paid',
+              statusBadge: 'badge-method',
+              icon: '💳',
+              iconBg: '#fef2f2',
+              iconColor: '#dc2626',
+              tag: 'SUPPLIER PAY'
+            });
+          }
+        });
+      }
+
+      // Sort chronologically descending: newest first
+      items.sort((a, b) => {
+        if (b.date !== a.date) return b.date.localeCompare(a.date);
+        return (b.id || '').localeCompare(a.id || '');
+      });
+
+      // Update badge count
+      const badgeCount = document.getElementById('dash-trx-count-badge');
+      if (badgeCount) {
+        badgeCount.textContent = `${items.length} ${items.length === 1 ? 'Record' : 'Records'}`;
+      }
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:2.5rem 1rem; color:var(--text-muted);">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🔍</div>
+            <div style="font-weight:700; font-size:0.95rem; color:var(--text-main);">No Transactions Found</div>
+            <p style="font-size:0.82rem; margin-top:0.25rem;">
+              ${isFiltered ? `No transactions, payments, or orders match the date range (${dashDateFilter.from || 'Beginning'} to ${dashDateFilter.to || 'Present'}).` : 'No transactions recorded yet.'}
+            </p>
+            ${isFiltered ? `<button class="btn btn-secondary btn-sm" onclick="clearDashboardDateFilter()" style="margin-top:0.75rem;">Reset to All Time</button>` : ''}
+          </div>
+        `;
+        return;
+      }
+
+      // If all time and no filter, display top 20 or all filtered
+      const displayItems = isFiltered ? items : items.slice(0, 15);
+
+      container.innerHTML = displayItems.map(item => `
+        <div class="dash-trx-item">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <div style="width:36px; height:36px; border-radius:8px; background:${item.iconBg}; color:${item.iconColor}; display:grid; place-items:center; font-size:1.1rem; flex-shrink:0;">
+              ${item.icon}
+            </div>
+            <div>
+              <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+                <span style="font-weight:700; font-size:0.88rem; color:var(--text-main);">${item.title}</span>
+                <span class="badge" style="font-size:0.65rem; padding:0.15rem 0.4rem; background:#f1f5f9; color:#475569; font-weight:700;">${item.tag}</span>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.1rem;">
+                <strong>${item.date}</strong> • ${item.subtitle}
+              </div>
+            </div>
+          </div>
+          <div style="text-align:right; flex-shrink:0; margin-left:0.75rem;">
+            <div style="font-weight:800; font-size:0.95rem; color:${item.type === 'payment' ? '#059669' : (item.type === 'supplier_payment' ? '#dc2626' : 'var(--text-main)')};">
+              ${item.type === 'payment' ? '+' : (item.type === 'supplier_payment' ? '-' : '')}${item.amountFormatted}
+            </div>
+            <span class="badge ${item.statusBadge}" style="font-size:0.68rem; margin-top:0.15rem; display:inline-block;">${item.status}</span>
           </div>
         </div>
       `).join('');
+
+      if (!isFiltered && items.length > 15) {
+        container.innerHTML += `
+          <div style="text-align:center; padding:0.75rem 0; font-size:0.78rem; color:var(--text-muted); border-top:1px solid #f1f5f9; margin-top:0.5rem;">
+            Showing latest 15 of ${items.length} total lifetime records. Select a date range above to view all transactions in that period.
+          </div>
+        `;
+      }
     }
 
-    // 6. Dealers Directory Table with Payment History Button
+    // Dealer Debt Filter Helpers
+    function viewOnlyOwingDealers() {
+      const filterEl = document.getElementById('filter-dealer-debt');
+      if (filterEl) filterEl.value = 'owing';
+      const searchEl = document.getElementById('search-dealer');
+      if (searchEl) searchEl.value = '';
+      switchTab('dealers');
+      renderDealersTable();
+      showToast('⚠️ Showing only dealers with outstanding debt balance');
+    }
+
+    function resetDealerDebtFilter() {
+      const filterEl = document.getElementById('filter-dealer-debt');
+      if (filterEl) filterEl.value = 'all';
+      renderDealersTable();
+    }
+
+    // 6. Dealers Directory Table with Payment History Button & Debt Filter
     function renderDealersTable() {
       const tbody = document.getElementById('dealers-tbody');
-      const query = document.getElementById('search-dealer').value.toLowerCase();
+      const query = (document.getElementById('search-dealer') ? document.getElementById('search-dealer').value : '').toLowerCase();
+      const debtFilterEl = document.getElementById('filter-dealer-debt');
+      const debtFilter = debtFilterEl ? debtFilterEl.value : 'all';
 
-      // Aggregate balances
+      // Aggregate balances across all orders
       const stats = {};
       db.dealers.forEach(d => {
         stats[d.name] = { purchased: 0, paid: 0, balance: 0 };
@@ -1937,14 +2941,54 @@
         stats[o.dealerName].balance += Number(o.balance || 0);
       });
 
-      const filtered = db.dealers.filter(d => 
-        d.name.toLowerCase().includes(query) ||
-        (d.contact && d.contact.toLowerCase().includes(query)) ||
-        (d.location && d.location.toLowerCase().includes(query))
-      );
+      // Calculate total owing stats for banner & counts
+      let totalOwingCount = 0;
+      let totalOwingAmount = 0;
+      Object.keys(stats).forEach(k => {
+        if (stats[k].balance > 0.01) {
+          totalOwingCount++;
+          totalOwingAmount += stats[k].balance;
+        }
+      });
+
+      // Update Debt Filter Alert Banner
+      const banner = document.getElementById('dealer-debt-filter-banner');
+      const countEl = document.getElementById('banner-owing-count');
+      const sumEl = document.getElementById('banner-owing-sum');
+      if (banner && countEl && sumEl) {
+        if (debtFilter === 'owing') {
+          banner.style.display = 'flex';
+          countEl.textContent = totalOwingCount;
+          sumEl.textContent = fmtMoney(totalOwingAmount);
+        } else {
+          banner.style.display = 'none';
+        }
+      }
+
+      // Filter dealers based on search query and debt status
+      const filtered = db.dealers.filter(d => {
+        const s = stats[d.name] || { purchased: 0, paid: 0, balance: 0 };
+        const hasDebt = s.balance > 0.01;
+
+        if (debtFilter === 'owing' && !hasDebt) return false;
+        if (debtFilter === 'clear' && hasDebt) return false;
+
+        const matchesQuery = d.name.toLowerCase().includes(query) ||
+          (d.contact && d.contact.toLowerCase().includes(query)) ||
+          (d.location && d.location.toLowerCase().includes(query)) ||
+          (d.id && d.id.toLowerCase().includes(query));
+
+        return matchesQuery;
+      });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:2rem;">No dealers found.</td></tr>`;
+        let emptyMsg = 'No dealers found.';
+        if (debtFilter === 'owing') {
+          emptyMsg = '🎉 No dealers currently owe any balance! All dealer accounts are fully clear.';
+        } else if (debtFilter === 'clear') {
+          emptyMsg = 'No dealers with zero balance found.';
+        }
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:2.5rem; font-weight:600;">${emptyMsg}</td></tr>`;
         return;
       }
 
@@ -1956,7 +3000,10 @@
         return `
           <tr>
             <td class="col-sticky-1" style="font-weight:700; color:var(--text-muted);">${d.id}</td>
-            <td class="col-sticky-2" style="font-weight:700; color:var(--text-main);">${d.name}</td>
+            <td class="col-sticky-2" style="font-weight:700; color:var(--text-main);">
+              ${d.name}
+              ${hasDebt ? '<span class="badge badge-unpaid" style="margin-left:0.35rem; font-size:0.65rem; padding:0.15rem 0.4rem;">Owes</span>' : ''}
+            </td>
             <td>
               <div>${d.contact || '-'}</div>
               <small style="color:var(--text-muted);">${d.phone || ''}</small>
@@ -1969,11 +3016,11 @@
               ${fmtMoney(s.balance)}
             </td>
             <td style="text-align:center;">
-              <div style="display:flex; gap:0.4rem; justify-content:center;">
-                <button class="btn btn-secondary btn-sm" onclick="viewDealerHistory('${d.name}')" title="View all payments by this dealer">
+              <div style="display:flex; gap:0.4rem; justify-content:center; flex-wrap:wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="viewDealerHistory('${(d.name || '').replace(/'/g, "\\'")}')" title="View all payments by this dealer">
                   📜 Payments (${payCount})
                 </button>
-                ${hasDebt ? `<button class="btn btn-primary btn-sm" onclick="quickPayDealer('${d.name}', ${s.balance})">💵 Pay</button>` : ''}
+                ${hasDebt ? `<button class="btn btn-primary btn-sm" onclick="quickPayDealer('${(d.name || '').replace(/'/g, "\\'")}', ${s.balance})">💵 Pay</button>` : ''}
               </div>
             </td>
           </tr>
@@ -2801,9 +3848,12 @@
 <body>
   <div class="statement-wrapper">
     <div class="header-bar">
-      <div>
-        <div class="brand-title">SIAKA <span>WHOLESALE FLOW</span></div>
-        <div class="brand-tag">Wholesale Stock Procurement & Supplier Account Statement</div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <img src="/logo.png" alt="Siaka Wholesale Flow" style="height:54px; width:54px; object-fit:contain; border-radius:8px;">
+        <div>
+          <div class="brand-title">SIAKA <span>WHOLESALE FLOW</span></div>
+          <div class="brand-tag">More Products. Brighter Possibilities. • Supplier Account Statement</div>
+        </div>
       </div>
       <div class="stmt-meta-box">
         <div class="stmt-badge">SUPPLIER STATEMENT</div>
@@ -3221,9 +4271,12 @@
 <body>
   <div class="statement-wrapper">
     <div class="header-bar">
-      <div>
-        <div class="brand-title">SIAKA <span>WHOLESALE FLOW</span></div>
-        <div class="brand-tag">Wholesale Distribution & Dealer Account Statement</div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <img src="/logo.png" alt="Siaka Wholesale Flow" style="height:54px; width:54px; object-fit:contain; border-radius:8px;">
+        <div>
+          <div class="brand-title">SIAKA <span>WHOLESALE FLOW</span></div>
+          <div class="brand-tag">More Products. Brighter Possibilities. • Dealer Account Statement</div>
+        </div>
       </div>
       <div class="stmt-meta-box">
         <div class="stmt-badge">ACCOUNT STATEMENT</div>
