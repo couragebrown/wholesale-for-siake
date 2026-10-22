@@ -780,10 +780,13 @@
       </div>
     </div>
     <div class="header-actions">
-      <div class="status-badge" title="Data is saved locally in wholesale_data.json">
+      <div class="status-badge" title="Data is saved locally in wholesale_data.json on Drive D">
         <span class="status-dot"></span>
-        <span>Auto-Saved to File</span>
+        <span>Auto-Saved to Drive D</span>
       </div>
+      <button class="btn btn-secondary" onclick="openBackupModal()" style="border-color:#10b981; color:#065f46; background:#ecfdf5; font-weight:700;">
+        🛡️ Data & Backups
+      </button>
       <button class="btn btn-secondary" onclick="openFolder()">
         📁 Open Data Folder
       </button>
@@ -953,7 +956,7 @@
                 <option value="payments">Dealer Payments Only</option>
                 <option value="suppliers">Supplier Restocks & Payments</option>
               </select>
-              <button class="btn btn-primary btn-sm" onclick="switchTab('new-order')">+ New Order</button>
+              <button class="btn btn-primary btn-sm" onclick="openNewOrderModal()">+ New Order</button>
             </div>
           </div>
           <div id="recent-orders-list" style="max-height: 480px; overflow-y: auto; padding-right: 0.25rem;">
@@ -963,92 +966,114 @@
       </div>
     </div>
 
-    <!-- 2. RECORD NEW ORDER VIEW (Clean Guided Form) -->
+    <!-- 2. RECORD NEW ORDER VIEW (Guided Form with Multi-Product Support) -->
     <div id="tab-new-order" class="tab-content">
       <div class="form-card">
-        <div class="form-title">
-          <h2>📝 Record New Wholesale Order</h2>
-          <p>Pick a dealer and product. Prices, totals, and balances calculate automatically.</p>
+        <div class="form-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <h2>📝 Record New Wholesale Order</h2>
+            <p>Select or search a dealer, add one or multiple products, and specify quantities.</p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="resetOrderForm('tab')">Clear Form</button>
         </div>
-        <form id="order-form" onsubmit="handleCreateOrder(event)">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>1. Select Authorized Dealer *</label>
-              <select id="ord-dealer" required onchange="onOrderDealerChange()">
-                <option value="">-- Select Dealer --</option>
-              </select>
-              <small id="ord-dealer-balance-hint" style="font-size:0.75rem; color:var(--text-muted); font-weight:600;"></small>
+        <form id="order-form-tab" onsubmit="handleCreateOrder(event, 'tab')">
+          <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>1. Authorized Dealer * (Type or search name)</label>
+              <input type="text" id="tab-ord-dealer" list="dealers-datalist" placeholder="🔍 Type dealer name or click dropdown to choose..." required autocomplete="off" oninput="onOrderDealerChange('tab')" onchange="onOrderDealerChange('tab')" style="font-weight:600;">
+              <small id="tab-ord-dealer-balance-hint" style="font-size:0.75rem; color:var(--text-muted); font-weight:700; display:block; margin-top:0.25rem;"></small>
             </div>
 
             <div class="form-group">
               <label>2. Order Date *</label>
-              <input type="date" id="ord-date" required>
+              <input type="date" id="tab-ord-date" required>
             </div>
 
             <div class="form-group">
-              <label>3. Select Product / SKU *</label>
-              <select id="ord-product" required onchange="onOrderProductChange()">
-                <option value="">-- Select Product --</option>
-              </select>
-              <small id="ord-stock-hint" style="font-size:0.75rem; color:var(--text-muted); font-weight:600;"></small>
-            </div>
-
-            <div class="form-group">
-              <label>4. Quantity Ordered *</label>
-              <input type="number" id="ord-qty" min="1" placeholder="e.g. 20" required oninput="calculateOrderPreview()">
-            </div>
-
-            <div class="form-group">
-              <label>Wholesale Unit Price</label>
-              <input type="number" id="ord-price" step="0.01" readonly style="background:#f1f5f9; color:#475569;">
-            </div>
-
-            <div class="form-group">
-              <label>5. Amount Paid Now (GH₵)</label>
-              <input type="number" id="ord-paid" min="0" step="0.01" value="0" placeholder="0.00" oninput="calculateOrderPreview()">
-              <div style="display:flex; gap:0.4rem; margin-top:0.3rem;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="fillPaid('full')">Paid In Full</button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="fillPaid('zero')">Unpaid / Credit</button>
-              </div>
-            </div>
-
-            <div class="form-group" id="ord-method-group">
               <label>Payment Method (if paying now)</label>
-              <select id="ord-method">
+              <select id="tab-ord-method">
+                <option value="Cash">Cash / Cash On Delivery</option>
                 <option value="Bank Transfer">Bank Transfer</option>
-                <option value="Cash">Cash On Delivery / Cash</option>
+                <option value="Mobile Money">Mobile Money (MoMo)</option>
                 <option value="Cheque">Cheque</option>
-                <option value="Mobile Money">Mobile Money</option>
                 <option value="Other">Other</option>
               </select>
             </div>
 
-            <div class="form-group" id="ord-ref-group">
+            <div class="form-group">
               <label>Payment Ref / Note</label>
-              <input type="text" id="ord-ref" placeholder="e.g. Cheque # or Bank Ref">
+              <input type="text" id="tab-ord-ref" placeholder="e.g. Cheque # or Bank Ref">
+            </div>
+          </div>
+
+          <!-- Multi-Product Items Container -->
+          <div style="margin: 1.5rem 0 1rem 0; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; padding: 1.1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <h3 style="font-size: 1rem; font-weight: 800; color: #1e293b; margin: 0;">3. Ordered Products & Quantities</h3>
+                <small style="color: #64748b; font-size: 0.78rem;">Add one or multiple wholesale products with their corresponding quantities</small>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="addOrderItemRow('tab')" style="background: #ecfdf5; border-color: #10b981; color: #065f46; font-weight: 700; display: flex; align-items: center; gap: 0.35rem;">
+                <span>➕</span> Add Product
+              </button>
+            </div>
+
+            <!-- Table of Items -->
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.86rem;" id="tab-order-items-table">
+                <thead>
+                  <tr style="border-bottom: 2px solid #e2e8f0; text-align: left; color: #475569; font-weight: 700;">
+                    <th style="padding: 0.5rem; width: 44%;">Select Product *</th>
+                    <th style="padding: 0.5rem; width: 20%;">Wholesale Unit Price</th>
+                    <th style="padding: 0.5rem; width: 16%; text-align: center;">Quantity (Number) *</th>
+                    <th style="padding: 0.5rem; width: 16%; text-align: right;">Line Total</th>
+                    <th style="padding: 0.5rem; width: 4%; text-align: center;"></th>
+                  </tr>
+                </thead>
+                <tbody id="tab-order-items-tbody">
+                  <!-- Dynamic Item Rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="display: flex; justify-content: flex-start; margin-top: 0.75rem;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="addOrderItemRow('tab')" style="border-color: #cbd5e1; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; gap: 0.35rem;">
+                <span>➕</span> Add Another Product
+              </button>
             </div>
           </div>
 
           <!-- Real-Time Calculation Preview -->
-          <div class="calc-banner">
+          <div class="calc-banner" style="margin: 1.25rem 0;">
             <div class="calc-box">
               <h4>Total Due</h4>
-              <div class="num" id="prev-total">GH₵ 0.00</div>
+              <div class="num" id="tab-prev-total">GH₵ 0.00</div>
             </div>
             <div class="calc-box">
-              <h4>Amount Paid</h4>
-              <div class="num" id="prev-paid">GH₵ 0.00</div>
+              <h4>Amount Paid Now</h4>
+              <div class="num" id="tab-prev-paid" style="color:#059669;">GH₵ 0.00</div>
             </div>
             <div class="calc-box">
               <h4>Balance Left to Pay</h4>
-              <div class="num" id="prev-balance" style="color:#ef4444;">GH₵ 0.00</div>
+              <div class="num" id="tab-prev-balance" style="color:#ef4444;">GH₵ 0.00</div>
+            </div>
+          </div>
+
+          <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label>Amount Paid Now (GH₵)</label>
+              <input type="number" id="tab-ord-paid" min="0" step="0.01" value="0" placeholder="0.00" oninput="calculateOrderPreview('tab')" style="font-weight:700;">
+              <div style="display:flex; gap:0.4rem; margin-top:0.3rem;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillPaid('full', 'tab')">Paid In Full</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillPaid('zero', 'tab')">Unpaid / Credit</button>
+              </div>
             </div>
           </div>
 
           <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
-            <button type="button" class="btn btn-secondary" onclick="resetOrderForm()">Clear</button>
-            <button type="submit" class="btn btn-primary" style="padding:0.65rem 1.75rem; font-size:0.95rem;">
-              💾 Save Order to File
+            <button type="button" class="btn btn-secondary" onclick="resetOrderForm('tab')">Clear</button>
+            <button type="submit" class="btn btn-primary" style="padding:0.65rem 1.75rem; font-size:0.95rem; font-weight:700;">
+              💾 Save Order & Deduct Stock
             </button>
           </div>
         </form>
@@ -1303,14 +1328,133 @@
     </div>
   </div>
 
-  <!-- MODAL: ADD NEW DEALER -->
+  <!-- SHARED DEALER SEARCH & AUTOCOMPLETE DATALIST -->
+  <datalist id="dealers-datalist"></datalist>
+
+  <!-- MODAL: RECORD WHOLESALE ORDER (POPUP WITH MULTI-PRODUCT BUILDER) -->
+  <div id="modal-new-order" class="modal-overlay" style="z-index: 230;">
+    <div class="modal-box" style="max-width: 820px; width: 95%; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: #1e293b; margin: 0;">📝 Record New Wholesale Order</h3>
+          <p style="font-size: 0.8rem; color: #64748b; margin: 0.2rem 0 0 0;">Search dealer, add multiple products, and track quantities</p>
+        </div>
+        <button class="close-btn" onclick="closeModal('modal-new-order')">&times;</button>
+      </div>
+
+      <form id="order-form-modal" onsubmit="handleCreateOrder(event, 'modal')">
+        <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem; margin-top: 0.75rem;">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label style="font-weight: 700; font-size: 0.85rem; color: #334155;">1. Authorized Dealer * (Type or search)</label>
+            <input type="text" id="m-ord-dealer" list="dealers-datalist" placeholder="🔍 Type dealer name or click dropdown to select..." required autocomplete="off" oninput="onOrderDealerChange('modal')" onchange="onOrderDealerChange('modal')" style="width: 100%; padding: 0.55rem; border-radius: 7px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 0.9rem;">
+            <small id="m-ord-dealer-balance-hint" style="font-size: 0.75rem; font-weight: 700; display: block; margin-top: 0.25rem;"></small>
+          </div>
+
+          <div class="form-group">
+            <label style="font-weight: 700; font-size: 0.85rem; color: #334155;">2. Order Date *</label>
+            <input type="date" id="m-ord-date" required style="width: 100%; padding: 0.5rem; border-radius: 7px; border: 1px solid #cbd5e1;">
+          </div>
+
+          <div class="form-group">
+            <label style="font-weight: 700; font-size: 0.85rem; color: #334155;">Payment Method (if paying now)</label>
+            <select id="m-ord-method" style="width: 100%; padding: 0.5rem; border-radius: 7px; border: 1px solid #cbd5e1;">
+              <option value="Cash">Cash / Cash On Delivery</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Mobile Money">Mobile Money (MoMo)</option>
+              <option value="Cheque">Cheque</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Multi-Product Items Container -->
+        <div style="margin: 1.25rem 0 0.75rem 0; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; padding: 0.9rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.4rem;">
+            <div>
+              <div style="font-size: 0.92rem; font-weight: 800; color: #1e293b;">3. Ordered Products & Quantities</div>
+              <small style="color: #64748b; font-size: 0.75rem;">Add more products and their corresponding quantities below</small>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addOrderItemRow('modal')" style="background: #ecfdf5; border-color: #10b981; color: #065f46; font-weight: 700; font-size: 0.78rem; padding: 0.35rem 0.75rem; display: flex; align-items: center; gap: 0.3rem;">
+              <span>➕</span> Add Product
+            </button>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.84rem;">
+              <thead>
+                <tr style="border-bottom: 2px solid #e2e8f0; text-align: left; color: #475569; font-weight: 700;">
+                  <th style="padding: 0.4rem; width: 44%;">Select Product *</th>
+                  <th style="padding: 0.4rem; width: 20%;">Wholesale Price</th>
+                  <th style="padding: 0.4rem; width: 16%; text-align: center;">Quantity (Number) *</th>
+                  <th style="padding: 0.4rem; width: 16%; text-align: right;">Line Total</th>
+                  <th style="padding: 0.4rem; width: 4%; text-align: center;"></th>
+                </tr>
+              </thead>
+              <tbody id="m-order-items-tbody">
+                <!-- Dynamic Item Rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; justify-content: flex-start; margin-top: 0.6rem;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addOrderItemRow('modal')" style="font-size: 0.78rem; padding: 0.35rem 0.7rem; border-color: #cbd5e1; font-weight: 600; display: flex; align-items: center; gap: 0.3rem;">
+              <span>➕</span> Add Another Product
+            </button>
+          </div>
+        </div>
+
+        <!-- Real-Time Calculation Preview -->
+        <div class="calc-banner" style="margin: 0.75rem 0; padding: 0.85rem; border-radius: 8px;">
+          <div class="calc-box">
+            <h4 style="font-size: 0.75rem;">Total Due</h4>
+            <div class="num" id="m-prev-total" style="font-size: 1.2rem;">GH₵ 0.00</div>
+          </div>
+          <div class="calc-box">
+            <h4 style="font-size: 0.75rem;">Amount Paid Now</h4>
+            <div class="num" id="m-prev-paid" style="font-size: 1.2rem; color: #059669;">GH₵ 0.00</div>
+          </div>
+          <div class="calc-box">
+            <h4 style="font-size: 0.75rem;">Balance Left to Pay</h4>
+            <div class="num" id="m-prev-balance" style="font-size: 1.2rem; color: #ef4444;">GH₵ 0.00</div>
+          </div>
+        </div>
+
+        <!-- Payment details -->
+        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.5rem;">
+          <div class="form-group">
+            <label style="font-weight: 700; font-size: 0.85rem;">Amount Paid Now (GH₵)</label>
+            <input type="number" id="m-ord-paid" min="0" step="0.01" value="0" placeholder="0.00" oninput="calculateOrderPreview('modal')" style="width: 100%; padding: 0.5rem; border-radius: 7px; border: 1px solid #cbd5e1; font-weight: 700;">
+            <div style="display: flex; gap: 0.4rem; margin-top: 0.3rem;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="fillPaid('full', 'modal')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Paid In Full</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="fillPaid('zero', 'modal')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Unpaid / Credit</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="font-weight: 700; font-size: 0.85rem;">Payment Reference / Cheque #</label>
+            <input type="text" id="m-ord-ref" placeholder="e.g. CHQ-2041 or MoMo Trans ID" style="width: 100%; padding: 0.5rem; border-radius: 7px; border: 1px solid #cbd5e1;">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem; border-top: 1px solid #e2e8f0; padding-top: 0.85rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-new-order')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-weight: 700;">
+            💾 Save Order & Deduct Stock
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT DEALER -->
   <div id="modal-add-dealer" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>👤 Add New Wholesale Dealer</h3>
+        <h3 id="modal-dlr-title">👤 Add New Wholesale Dealer</h3>
         <button class="close-btn" onclick="closeModal('modal-add-dealer')">&times;</button>
       </div>
       <form onsubmit="handleSaveDealer(event)">
+        <input type="hidden" id="edit-dlr-id" value="">
         <div class="form-group" style="margin-bottom:0.75rem;">
           <label>Dealer / Business Name *</label>
           <input type="text" id="new-dlr-name" placeholder="e.g. Metro Express Retail" required>
@@ -1338,20 +1482,21 @@
         </div>
         <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-dealer')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Dealer to File</button>
+          <button type="submit" id="modal-dlr-submit" class="btn btn-primary">Save Dealer to File</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: ADD NEW PRODUCT -->
+  <!-- MODAL: ADD / EDIT PRODUCT & STOCK -->
   <div id="modal-add-product" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>📦 Add New Wholesale Product</h3>
+        <h3 id="modal-prd-title">📦 Add New Wholesale Product</h3>
         <button class="close-btn" onclick="closeModal('modal-add-product')">&times;</button>
       </div>
       <form onsubmit="handleSaveProduct(event)">
+        <input type="hidden" id="edit-prd-id" value="">
         <div class="form-group" style="margin-bottom:0.75rem;">
           <label>Product Name & Description *</label>
           <input type="text" id="new-prd-name" placeholder="e.g. Pure Honey 500g" required>
@@ -1369,12 +1514,12 @@
           <input type="number" id="new-prd-price" step="0.01" min="0" placeholder="e.g. 45.00" required>
         </div>
         <div class="form-group" style="margin-bottom:1.25rem;">
-          <label>Initial Stock Quantity</label>
+          <label id="lbl-prd-stock">Initial Stock Quantity</label>
           <input type="number" id="new-prd-stock" min="0" placeholder="e.g. 100" value="50" required>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-product')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Product to File</button>
+          <button type="submit" id="modal-prd-submit" class="btn btn-primary">Save Product to File</button>
         </div>
       </form>
     </div>
@@ -1389,11 +1534,9 @@
       </div>
       <form onsubmit="handleRecordPayment(event)">
         <div class="form-group" style="margin-bottom:0.75rem;">
-          <label>Select Dealer *</label>
-          <select id="pay-dealer" required onchange="updatePayModalHint()">
-            <option value="">-- Choose Dealer --</option>
-          </select>
-          <small id="pay-hint" style="font-size:0.75rem; color:#ef4444; font-weight:700;"></small>
+          <label>Select Dealer * (Type or search)</label>
+          <input type="text" id="pay-dealer" list="dealers-datalist" placeholder="🔍 Type or search dealer name..." required autocomplete="off" oninput="updatePayModalHint()" onchange="updatePayModalHint()" style="width: 100%; padding: 0.5rem; border-radius: 7px; border: 1px solid #cbd5e1; font-weight: 600;">
+          <small id="pay-hint" style="font-size:0.75rem; color:#ef4444; font-weight:700; display:block; margin-top:0.25rem;"></small>
         </div>
         <div class="form-group" style="margin-bottom:0.75rem;">
           <label>Payment Amount Received (GH₵) *</label>
@@ -1430,14 +1573,15 @@
     </div>
   </div>
 
-  <!-- MODAL: ADD NEW SUPPLIER -->
+  <!-- MODAL: ADD / EDIT SUPPLIER -->
   <div id="modal-add-supplier" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>🏭 Add New Goods Supplier</h3>
+        <h3 id="modal-sup-title">🏭 Add New Goods Supplier</h3>
         <button class="close-btn" onclick="closeModal('modal-add-supplier')">&times;</button>
       </div>
       <form onsubmit="handleSaveSupplier(event)">
+        <input type="hidden" id="edit-sup-id" value="">
         <div class="form-group" style="margin-bottom:0.75rem;">
           <label>Supplier ID</label>
           <input type="text" id="new-sup-id" readonly style="background:#f1f5f9; color:#475569; font-weight:700;">
@@ -1473,7 +1617,7 @@
         </div>
         <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-supplier')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Supplier to File</button>
+          <button type="submit" id="modal-sup-submit" class="btn btn-primary">Save Supplier to File</button>
         </div>
       </form>
     </div>
@@ -1737,6 +1881,89 @@
     </div>
   </div>
 
+  <!-- MODAL: DATA SAFETY, BACKUPS & RESTORE -->
+  <div id="modal-database-backup" class="modal-overlay" style="z-index: 240; padding: 1rem;">
+    <div class="modal-box" style="max-width: 820px; width: 95%; max-height: 90vh; overflow-y: auto; border-radius: 14px;">
+      <div class="modal-header" style="border-bottom: 2px solid #f1f5f9; padding-bottom: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 1.8rem;">🛡️</span>
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;">Data Safety & Instant Recovery Hub</h2>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 0.2rem 0 0 0;">Guaranteed Zero Data Loss Architecture • Running securely from Drive D</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modal-database-backup')">✖</button>
+      </div>
+
+      <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 1.25rem;">
+        <!-- Status summary banner -->
+        <div style="background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%); border: 1px solid #a7f3d0; border-radius: 10px; padding: 1.1rem; display: flex; align-items: flex-start; gap: 0.9rem;">
+          <div style="font-size: 1.5rem; line-height: 1;">🔒</div>
+          <div style="font-size: 0.88rem; color: #065f46;">
+            <strong>Your wholesale database is protected by 3-Layer Redundancy:</strong>
+            <ul style="margin: 0.4rem 0 0 1.2rem; padding: 0; line-height: 1.5;">
+              <li><strong>Atomic Disk Writes:</strong> Prevents 0-byte file corruption during sudden power drops.</li>
+              <li><strong>Automatic Rolling Snapshots:</strong> A timestamped backup is generated in <code>app\data\backups\</code> every time changes are saved.</li>
+              <li><strong>Local Drive D Storage:</strong> Installed outside Drive C, insulating your business records from Windows OS re-installs.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Metric counts -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem;">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">PRODUCTS</div>
+            <div id="backup-stat-products" style="font-size: 1.3rem; font-weight: 800; color: #1e293b;">0</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">DEALERS</div>
+            <div id="backup-stat-dealers" style="font-size: 1.3rem; font-weight: 800; color: #1e293b;">0</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">SUPPLIERS</div>
+            <div id="backup-stat-suppliers" style="font-size: 1.3rem; font-weight: 800; color: #1e293b;">0</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">ORDERS</div>
+            <div id="backup-stat-orders" style="font-size: 1.3rem; font-weight: 800; color: #1e293b;">0</div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; text-align: center;">
+            <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">PAYMENTS</div>
+            <div id="backup-stat-payments" style="font-size: 1.3rem; font-weight: 800; color: #1e293b;">0</div>
+          </div>
+        </div>
+
+        <!-- Backup & Export Actions -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+          <button class="btn btn-primary" onclick="downloadDatabaseJsonBackup()" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem;">
+            <span>📥</span>
+            <span>Download Database (.json)</span>
+          </button>
+          <button class="btn btn-secondary" onclick="createManualBackupSnapshot()" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; background: #f0fdf4; border-color: #10b981; color: #065f46; font-weight: 700;">
+            <span>⚡</span>
+            <span>Take Instant Server Snapshot</span>
+          </button>
+          <label class="btn btn-secondary" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem; cursor: pointer; background: #fffbeb; border-color: #f59e0b; color: #92400e; font-weight: 700; margin: 0;">
+            <span>🔄</span>
+            <span>Restore From File</span>
+            <input type="file" id="restore-file-input" accept=".json" style="display: none;" onchange="handleRestoreFileChosen(event)">
+          </label>
+        </div>
+
+        <!-- Available Server Snapshots -->
+        <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 800; color: #334155; margin: 0;">Server Rolling Snapshots (Drive D)</h3>
+            <button class="btn btn-secondary btn-sm" onclick="fetchAndRenderBackupsList()">🔄 Refresh List</button>
+          </div>
+          <div id="backups-list-container" style="max-height: 220px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc;">
+            <div style="padding: 1.5rem; text-align: center; color: #94a3b8; font-size: 0.85rem;">Loading snapshots...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div id="toast" class="toast">
     <span>✅</span>
@@ -1755,10 +1982,17 @@
 
     // Initialization
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('ord-date').valueAsDate = new Date();
-      document.getElementById('pay-date').valueAsDate = new Date();
+      if (document.getElementById('tab-ord-date')) document.getElementById('tab-ord-date').valueAsDate = new Date();
+      if (document.getElementById('m-ord-date')) document.getElementById('m-ord-date').valueAsDate = new Date();
+      if (document.getElementById('pay-date')) document.getElementById('pay-date').valueAsDate = new Date();
       if (document.getElementById('spur-date')) document.getElementById('spur-date').valueAsDate = new Date();
       if (document.getElementById('spay-date')) document.getElementById('spay-date').valueAsDate = new Date();
+
+      // Ensure tab order items table has initial row
+      const tabTbody = document.getElementById('tab-order-items-tbody');
+      if (tabTbody && tabTbody.children.length === 0) {
+        addOrderItemRow('tab');
+      }
 
       // Support initial URL filter params (e.g., ?from=2026-10-01&to=2026-10-08)
       const params = new URLSearchParams(window.location.search);
@@ -1786,6 +2020,7 @@
           if (!db.suppliers) db.suppliers = [];
           if (!db.supplierPurchases) db.supplierPurchases = [];
           if (!db.supplierPayments) db.supplierPayments = [];
+          localStorage.setItem('wholesale_flow_db', JSON.stringify(db));
           renderAll();
           const p = new URLSearchParams(window.location.search);
           if (p.get('filter') === 'owing') {
@@ -2117,156 +2352,375 @@
       updateDashboardFilterBanner(filteredOrders, filteredPayments, filteredPurchases, filteredSupPayments);
     }
 
-    // 2. Populate Select Dropdowns
+    // 2. Populate Select Dropdowns & Dealer Datalist
     function populateDropdowns() {
-      const ordDealer = document.getElementById('ord-dealer');
-      const curOrdDealer = ordDealer.value;
-      ordDealer.innerHTML = '<option value="">-- Select Dealer --</option>';
-
-      const payDealer = document.getElementById('pay-dealer');
-      const curPayDealer = payDealer.value;
-      payDealer.innerHTML = '<option value="">-- Choose Dealer --</option>';
-
-      const filterPayDealer = document.getElementById('filter-pay-dealer');
-      const curFilterPayDealer = filterPayDealer ? filterPayDealer.value : 'all';
-      if (filterPayDealer) {
-        filterPayDealer.innerHTML = '<option value="all">All Dealers</option>';
+      // Shared Dealer Datalist for fast search / autocomplete across Tab, Modal, and Payment
+      const dList = document.getElementById('dealers-datalist');
+      if (dList) {
+        dList.innerHTML = (db.dealers || []).map(d => {
+          const bal = getDealerBalance(d.name);
+          const debtNote = bal > 0.01 ? ` [Owes ${fmtMoney(bal)}]` : '';
+          const locNote = d.location ? ` - ${d.location}` : '';
+          return `<option value="${d.name}">${d.name}${debtNote}${locNote}</option>`;
+        }).join('');
       }
 
-      db.dealers.forEach(d => {
-        ordDealer.add(new Option(d.name, d.name));
-        const bal = getDealerBalance(d.name);
-        payDealer.add(new Option(bal > 0.01 ? `${d.name} (Owes ${fmtMoney(bal)})` : d.name, d.name));
-        if (filterPayDealer) filterPayDealer.add(new Option(d.name, d.name));
-      });
-
-      if (curOrdDealer) ordDealer.value = curOrdDealer;
-      if (curPayDealer) payDealer.value = curPayDealer;
-      if (filterPayDealer && curFilterPayDealer) filterPayDealer.value = curFilterPayDealer;
+      // Filter Pay Dealer dropdown on Payments tab
+      const filterPayDealer = document.getElementById('filter-pay-dealer');
+      if (filterPayDealer) {
+        const curFilter = filterPayDealer.value || 'all';
+        filterPayDealer.innerHTML = '<option value="all">All Dealers</option>';
+        (db.dealers || []).forEach(d => {
+          filterPayDealer.add(new Option(d.name, d.name));
+        });
+        filterPayDealer.value = curFilter;
+      }
 
       // Populate Quick Account Dropdown on Dashboard
       const searchInput = document.getElementById('quick-entity-search');
       populateQuickAccountDropdown(searchInput ? searchInput.value : '');
 
-      // Products Dropdown
-      const ordProduct = document.getElementById('ord-product');
-      const curPrd = ordProduct.value;
-      ordProduct.innerHTML = '<option value="">-- Select Product --</option>';
-      db.products.forEach(p => {
-        const opt = new Option(`${p.name} (${fmtMoney(p.price)} / ${p.unit})`, p.name);
-        opt.dataset.price = p.price;
-        opt.dataset.stock = p.stock;
-        opt.dataset.unit = p.unit;
-        ordProduct.add(opt);
-      });
-      if (curPrd) ordProduct.value = curPrd;
+      // Refresh product dropdown options in all active order item rows
+      refreshAllOrderItemDropdowns();
     }
 
-    // 3. New Order Logic
-    function onOrderDealerChange() {
-      const name = document.getElementById('ord-dealer').value;
-      const hint = document.getElementById('ord-dealer-balance-hint');
-      if (!name) { hint.textContent = ''; return; }
+    // Helper: Generate Product Dropdown Options
+    function getProductOptionsHtml(selectedPrd = '') {
+      let html = '<option value="">-- Select Product --</option>';
+      (db.products || []).forEach(p => {
+        const isSelected = p.name === selectedPrd ? 'selected' : '';
+        html += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}" data-unit="${p.unit}" ${isSelected}>${p.name} (${fmtMoney(p.price)} / ${p.unit})</option>`;
+      });
+      return html;
+    }
 
-      const balance = getDealerBalance(name);
-      if (balance > 0) {
-        hint.textContent = `⚠️ Current Debt: ${fmtMoney(balance)} outstanding`;
-        hint.style.color = '#ef4444';
+    // 3. Multi-Product Order Engine
+    let orderRowCounter = 0;
+
+    function addOrderItemRow(scope = 'tab', defaultProduct = '', defaultQty = 1) {
+      const tbody = document.getElementById(scope === 'modal' ? 'm-order-items-tbody' : 'tab-order-items-tbody');
+      if (!tbody) return;
+      orderRowCounter++;
+      const rowId = `ord-row-${scope}-${orderRowCounter}`;
+
+      const tr = document.createElement('tr');
+      tr.id = rowId;
+      tr.className = 'ord-item-row';
+      tr.style.borderBottom = '1px solid #e2e8f0';
+
+      tr.innerHTML = `
+        <td style="padding: 0.5rem 0.4rem; vertical-align: top;">
+          <select class="ord-item-product" style="width: 100%; padding: 0.48rem; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 0.85rem;" onchange="onOrderItemProductChange(this, '${scope}')" required>
+            ${getProductOptionsHtml(defaultProduct)}
+          </select>
+          <div class="ord-item-stock-hint" style="font-size: 0.72rem; color: #64748b; margin-top: 0.25rem; font-weight: 600;"></div>
+        </td>
+        <td style="padding: 0.5rem 0.4rem; vertical-align: top;">
+          <div style="display: flex; align-items: center; gap: 0.25rem;">
+            <span style="font-size: 0.75rem; color: #64748b; font-weight: 700;">GH₵</span>
+            <input type="number" class="ord-item-price" step="0.01" min="0" value="0.00" readonly style="width: 100%; padding: 0.45rem; border-radius: 6px; border: 1px solid #e2e8f0; background: #f8fafc; font-weight: 700; font-size: 0.85rem;" oninput="calculateOrderPreview('${scope}')">
+          </div>
+          <small class="ord-item-unit" style="font-size: 0.7rem; color: #94a3b8; display: block; margin-top: 0.2rem;"></small>
+        </td>
+        <td style="padding: 0.5rem 0.4rem; vertical-align: top; text-align: center;">
+          <input type="number" class="ord-item-qty" min="1" step="1" value="${defaultQty}" style="width: 90px; padding: 0.45rem; border-radius: 6px; border: 1px solid #cbd5e1; text-align: center; font-weight: 700; font-size: 0.9rem;" oninput="calculateOrderPreview('${scope}')" required>
+        </td>
+        <td style="padding: 0.5rem 0.4rem; vertical-align: top; text-align: right;">
+          <div class="ord-item-total" style="font-weight: 800; color: #1e293b; font-size: 0.9rem; padding-top: 0.45rem;">GH₵ 0.00</div>
+        </td>
+        <td style="padding: 0.5rem 0.4rem; vertical-align: top; text-align: center;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="removeOrderItemRow('${rowId}', '${scope}')" style="padding: 0.35rem 0.55rem; color: #ef4444; border-color: #fecaca; background: #fff5f5; font-size: 0.85rem;" title="Remove this product">✕</button>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+
+      if (defaultProduct) {
+        const sel = tr.querySelector('.ord-item-product');
+        if (sel) onOrderItemProductChange(sel, scope);
       } else {
-        hint.textContent = `✅ Account Clear (No debt)`;
-        hint.style.color = '#10b981';
+        calculateOrderPreview(scope);
       }
     }
 
-    function onOrderProductChange() {
-      const sel = document.getElementById('ord-product');
-      const opt = sel.selectedOptions[0];
-      const priceInput = document.getElementById('ord-price');
-      const stockHint = document.getElementById('ord-stock-hint');
+    function removeOrderItemRow(rowId, scope = 'tab') {
+      const tbody = document.getElementById(scope === 'modal' ? 'm-order-items-tbody' : 'tab-order-items-tbody');
+      const row = document.getElementById(rowId);
+      if (row) row.remove();
+
+      // Ensure at least 1 row always exists
+      if (tbody && tbody.children.length === 0) {
+        addOrderItemRow(scope);
+      } else {
+        calculateOrderPreview(scope);
+      }
+    }
+
+    function onOrderItemProductChange(selectEl, scope = 'tab') {
+      const row = selectEl.closest('tr');
+      if (!row) return;
+
+      const opt = selectEl.selectedOptions[0];
+      const priceInput = row.querySelector('.ord-item-price');
+      const unitSpan = row.querySelector('.ord-item-unit');
+      const stockHint = row.querySelector('.ord-item-stock-hint');
 
       if (!opt || !opt.value) {
-        priceInput.value = '';
-        stockHint.textContent = '';
-        calculateOrderPreview();
+        if (priceInput) priceInput.value = '0.00';
+        if (unitSpan) unitSpan.textContent = '';
+        if (stockHint) stockHint.textContent = '';
+      } else {
+        const prd = (db.products || []).find(p => p.name === opt.value);
+        const price = prd ? prd.price : (Number(opt.dataset.price) || 0);
+        const stock = prd ? prd.stock : (Number(opt.dataset.stock) || 0);
+        const unit = prd ? prd.unit : (opt.dataset.unit || 'Unit');
+
+        if (priceInput) priceInput.value = Number(price).toFixed(2);
+        if (unitSpan) unitSpan.textContent = `per ${unit}`;
+        if (stockHint) {
+          stockHint.textContent = `Stock: ${stock} ${unit}s available`;
+          stockHint.style.color = stock > 0 ? '#059669' : '#ef4444';
+        }
+      }
+
+      calculateOrderPreview(scope);
+    }
+
+    function refreshAllOrderItemDropdowns() {
+      ['tab', 'modal'].forEach(scope => {
+        const tbody = document.getElementById(scope === 'modal' ? 'm-order-items-tbody' : 'tab-order-items-tbody');
+        if (!tbody) return;
+        tbody.querySelectorAll('tr').forEach(tr => {
+          const sel = tr.querySelector('.ord-item-product');
+          if (sel) {
+            const currentVal = sel.value;
+            sel.innerHTML = getProductOptionsHtml(currentVal);
+            if (currentVal) sel.value = currentVal;
+          }
+        });
+      });
+    }
+
+    function calculateOrderPreview(scope = 'tab') {
+      const prefix = scope === 'modal' ? 'm-' : 'tab-';
+      const tbody = document.getElementById(scope === 'modal' ? 'm-order-items-tbody' : 'tab-order-items-tbody');
+
+      let grandTotal = 0;
+      if (tbody) {
+        tbody.querySelectorAll('tr').forEach(tr => {
+          const price = Number(tr.querySelector('.ord-item-price')?.value || 0);
+          const qty = Number(tr.querySelector('.ord-item-qty')?.value || 0);
+          const lineTotal = price * qty;
+          grandTotal += lineTotal;
+
+          const totalEl = tr.querySelector('.ord-item-total');
+          if (totalEl) totalEl.textContent = fmtMoney(lineTotal);
+        });
+      }
+
+      const paidInput = document.getElementById(`${prefix}ord-paid`);
+      const paid = Number(paidInput ? paidInput.value : 0);
+      const balance = Math.max(0, grandTotal - paid);
+
+      const elTotal = document.getElementById(`${prefix}prev-total`);
+      const elPaid = document.getElementById(`${prefix}prev-paid`);
+      const elBal = document.getElementById(`${prefix}prev-balance`);
+
+      if (elTotal) elTotal.textContent = fmtMoney(grandTotal);
+      if (elPaid) elPaid.textContent = fmtMoney(paid);
+      if (elBal) elBal.textContent = fmtMoney(balance);
+    }
+
+    function fillPaid(mode, scope = 'tab') {
+      const prefix = scope === 'modal' ? 'm-' : 'tab-';
+      const tbody = document.getElementById(scope === 'modal' ? 'm-order-items-tbody' : 'tab-order-items-tbody');
+
+      let grandTotal = 0;
+      if (tbody) {
+        tbody.querySelectorAll('tr').forEach(tr => {
+          const price = Number(tr.querySelector('.ord-item-price')?.value || 0);
+          const qty = Number(tr.querySelector('.ord-item-qty')?.value || 0);
+          grandTotal += (price * qty);
+        });
+      }
+
+      const paidInput = document.getElementById(`${prefix}ord-paid`);
+      if (paidInput) {
+        if (mode === 'full') {
+          paidInput.value = grandTotal.toFixed(2);
+        } else if (mode === 'zero') {
+          paidInput.value = '0.00';
+        }
+      }
+      calculateOrderPreview(scope);
+    }
+
+    function onOrderDealerChange(scope = 'tab') {
+      const prefix = scope === 'modal' ? 'm-' : 'tab-';
+      const dealerInput = document.getElementById(`${prefix}ord-dealer`);
+      const hint = document.getElementById(`${prefix}ord-dealer-balance-hint`);
+      if (!dealerInput || !hint) return;
+
+      const name = dealerInput.value.trim();
+      if (!name) {
+        hint.textContent = '';
         return;
       }
 
-      priceInput.value = opt.dataset.price;
-      stockHint.textContent = `Warehouse Stock: ${opt.dataset.stock} units available`;
-      calculateOrderPreview();
-    }
-
-    function calculateOrderPreview() {
-      const price = Number(document.getElementById('ord-price').value || 0);
-      const qty = Number(document.getElementById('ord-qty').value || 0);
-      const paid = Number(document.getElementById('ord-paid').value || 0);
-
-      const total = price * qty;
-      const bal = Math.max(0, total - paid);
-
-      document.getElementById('prev-total').textContent = fmtMoney(total);
-      document.getElementById('prev-paid').textContent = fmtMoney(paid);
-      document.getElementById('prev-balance').textContent = fmtMoney(bal);
-    }
-
-    function fillPaid(mode) {
-      const price = Number(document.getElementById('ord-price').value || 0);
-      const qty = Number(document.getElementById('ord-qty').value || 0);
-      const total = price * qty;
-
-      if (mode === 'full') {
-        document.getElementById('ord-paid').value = total.toFixed(2);
-      } else if (mode === 'zero') {
-        document.getElementById('ord-paid').value = '0.00';
+      const d = (db.dealers || []).find(x => x.name.toLowerCase() === name.toLowerCase());
+      if (d) {
+        const balance = getDealerBalance(d.name);
+        if (balance > 0.01) {
+          hint.textContent = `⚠️ Outstanding Balance: ${fmtMoney(balance)} | Terms: ${d.terms || 'Net 30'} | Location: ${d.location || '-'}`;
+          hint.style.color = '#ef4444';
+        } else {
+          hint.textContent = `✅ Account Clear (Zero debt) | Terms: ${d.terms || 'Net 30'} | Location: ${d.location || '-'}`;
+          hint.style.color = '#10b981';
+        }
+      } else {
+        hint.textContent = `ℹ️ Unregistered dealer name. You can still create this order and add dealer under Dealers tab.`;
+        hint.style.color = '#f59e0b';
       }
-      calculateOrderPreview();
     }
 
-    function handleCreateOrder(e) {
-      e.preventDefault();
-      const dealer = document.getElementById('ord-dealer').value;
-      const date = document.getElementById('ord-date').value;
-      const prdSelect = document.getElementById('ord-product');
-      const prdName = prdSelect.value;
-      const opt = prdSelect.selectedOptions[0];
-      const unit = opt ? opt.dataset.unit : 'Unit';
-      const price = Number(document.getElementById('ord-price').value || 0);
-      const qty = Number(document.getElementById('ord-qty').value || 0);
-      const paid = Number(document.getElementById('ord-paid').value || 0);
-      const method = document.getElementById('ord-method').value || 'Bank Transfer';
-      const ref = document.getElementById('ord-ref').value.trim();
+    function openNewOrderModal(defaultDealer = '') {
+      resetOrderForm('modal');
+      const dInput = document.getElementById('m-ord-dealer');
+      if (dInput && defaultDealer) {
+        dInput.value = defaultDealer;
+        onOrderDealerChange('modal');
+      }
+      openModal('modal-new-order');
+    }
 
-      const total = price * qty;
-      const bal = Math.max(0, total - paid);
+    function resetOrderForm(scope = 'tab') {
+      const prefix = scope === 'modal' ? 'm-' : 'tab-';
+      const form = document.getElementById(scope === 'modal' ? 'order-form-modal' : 'order-form-tab');
+      if (form) form.reset();
+
+      const dateInput = document.getElementById(`${prefix}ord-date`);
+      if (dateInput) dateInput.valueAsDate = new Date();
+
+      const hint = document.getElementById(`${prefix}ord-dealer-balance-hint`);
+      if (hint) hint.textContent = '';
+
+      const paidInput = document.getElementById(`${prefix}ord-paid`);
+      if (paidInput) paidInput.value = '0';
+
+      const tbody = document.getElementById(scope === 'modal' ? 'm-order-items-tbody' : 'tab-order-items-tbody');
+      if (tbody) {
+        tbody.innerHTML = '';
+        addOrderItemRow(scope);
+      }
+      calculateOrderPreview(scope);
+    }
+
+    function handleCreateOrder(e, scope = 'tab') {
+      e.preventDefault();
+      const prefix = scope === 'modal' ? 'm-' : 'tab-';
+      const dealerInput = document.getElementById(`${prefix}ord-dealer`);
+      const dealer = dealerInput ? dealerInput.value.trim() : '';
+      if (!dealer) {
+        showToast('Please type or select an authorized dealer.', 'danger');
+        dealerInput?.focus();
+        return;
+      }
+
+      const date = document.getElementById(`${prefix}ord-date`)?.value || new Date().toISOString().split('T')[0];
+      const method = document.getElementById(`${prefix}ord-method`)?.value || 'Cash';
+      const ref = document.getElementById(`${prefix}ord-ref`)?.value.trim() || '';
+      const paid = Number(document.getElementById(`${prefix}ord-paid`)?.value || 0);
+
+      // Collect products and quantities from item rows
+      const tbody = document.getElementById(scope === 'modal' ? 'm-order-items-tbody' : 'tab-order-items-tbody');
+      const rows = tbody ? Array.from(tbody.querySelectorAll('tr')) : [];
+      if (rows.length === 0) {
+        showToast('Please add at least one product to the order.', 'danger');
+        return;
+      }
+
+      const items = [];
+      let grandTotal = 0;
+      let totalQty = 0;
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const prdSelect = row.querySelector('.ord-item-product');
+        const prdName = prdSelect?.value;
+        if (!prdName) {
+          showToast(`Please select a product for item #${i + 1}.`, 'danger');
+          prdSelect?.focus();
+          return;
+        }
+
+        const qtyInput = row.querySelector('.ord-item-qty');
+        const qty = Number(qtyInput?.value || 0);
+        if (qty <= 0) {
+          showToast(`Please enter a valid quantity for ${prdName}.`, 'danger');
+          qtyInput?.focus();
+          return;
+        }
+
+        const prd = (db.products || []).find(p => p.name === prdName);
+        const price = Number(row.querySelector('.ord-item-price')?.value || (prd ? prd.price : 0));
+        const unit = prd ? prd.unit : 'Unit';
+        const lineTotal = price * qty;
+
+        grandTotal += lineTotal;
+        totalQty += qty;
+
+        items.push({
+          itemName: prdName,
+          unit: unit,
+          unitPrice: price,
+          quantity: qty,
+          lineTotal: lineTotal
+        });
+      }
+
+      if (items.length === 0) {
+        showToast('Please add at least one product to the order.', 'danger');
+        return;
+      }
+
+      const bal = Math.max(0, grandTotal - paid);
       let status = "Pending / Unpaid";
-      if (paid >= total && total > 0) status = "Paid In Full";
+      if (paid >= grandTotal && grandTotal > 0) status = "Paid In Full";
       else if (paid > 0) status = "Partial Payment";
 
-      const orderId = `ORD-2026-${100 + db.orders.length + 1}`;
-      const invId = `INV-${8800 + db.orders.length + 1}`;
+      const orderId = `ORD-2026-${100 + (db.orders || []).length + 1}`;
+      const invId = `INV-${8800 + (db.orders || []).length + 1}`;
+
+      // Construct item summary string for backward compatibility with views & Excel export
+      const itemSummary = items.length === 1 
+        ? items[0].itemName 
+        : items.map(it => `${it.itemName} (${it.quantity} ${it.unit})`).join(', ');
 
       const newOrder = {
         id: orderId,
         date: date,
         invoice: invId,
         dealerName: dealer,
-        itemName: prdName,
-        unit: unit,
-        unitPrice: price,
-        quantity: qty,
-        totalDue: total,
+        itemName: itemSummary,
+        unit: items.length === 1 ? items[0].unit : 'Mixed',
+        unitPrice: items.length === 1 ? items[0].unitPrice : (grandTotal / (totalQty || 1)),
+        quantity: totalQty,
+        totalDue: grandTotal,
         amountPaid: paid,
         balance: bal,
-        status: status
+        status: status,
+        items: items
       };
 
-      // Deduct warehouse inventory
-      const product = db.products.find(p => p.name === prdName);
-      if (product) {
-        product.stock = Math.max(0, product.stock - qty);
-      }
+      // Deduct warehouse inventory for each product
+      items.forEach(it => {
+        const product = (db.products || []).find(p => p.name === it.itemName);
+        if (product) {
+          product.stock = Math.max(0, product.stock - it.quantity);
+        }
+      });
 
-      // If money was paid, record into payment history!
+      // If money was paid now, record into payment history
       if (paid > 0) {
         if (!db.payments) db.payments = [];
         const payId = `PAY-2026-${String(db.payments.length + 1).padStart(3, '0')}`;
@@ -2281,20 +2735,16 @@
         });
       }
 
+      if (!db.orders) db.orders = [];
       db.orders.unshift(newOrder);
       saveData();
 
-      resetOrderForm();
-      switchTab('ledger');
-      showToast(`Order ${orderId} recorded & payment logged in history!`);
-    }
-
-    function resetOrderForm() {
-      document.getElementById('order-form').reset();
-      document.getElementById('ord-date').valueAsDate = new Date();
-      document.getElementById('ord-dealer-balance-hint').textContent = '';
-      document.getElementById('ord-stock-hint').textContent = '';
-      calculateOrderPreview();
+      if (scope === 'modal') {
+        closeModal('modal-new-order');
+      }
+      resetOrderForm(scope);
+      renderAll();
+      showToast(`✅ Order ${orderId} recorded with ${items.length} product(s) successfully!`);
     }
 
     // 4. Quick Account (Dealer & Supplier) Statement & Balance Check on Dashboard
@@ -3017,6 +3467,12 @@
             </td>
             <td style="text-align:center;">
               <div style="display:flex; gap:0.4rem; justify-content:center; flex-wrap:wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="openNewOrderModal('${(d.name || '').replace(/'/g, "\\'")}')" title="Record new wholesale order for this dealer" style="background:#eef2ff; border-color:#6366f1; color:#4338ca; font-weight:700;">
+                  🛍️ Order
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="editDealer('${(d.id || '').replace(/'/g, "\\'")}')" title="Edit dealer info">
+                  ✏️ Edit
+                </button>
                 <button class="btn btn-secondary btn-sm" onclick="viewDealerHistory('${(d.name || '').replace(/'/g, "\\'")}')" title="View all payments by this dealer">
                   📜 Payments (${payCount})
                 </button>
@@ -3133,6 +3589,9 @@
             </td>
             <td style="text-align:center;">
               <div style="display:flex; gap:0.4rem; justify-content:center; flex-wrap:wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="editSupplier('${(s.id || '').replace(/'/g, "\\'")}')" title="Edit supplier details">
+                  ✏️ Edit
+                </button>
                 <button class="btn btn-secondary btn-sm" onclick="viewSupplierHistory('${(s.name || '').replace(/'/g, "\\'")}')" title="View purchases and payments for this supplier">
                   📜 History (${purchaseCount + payCount})
                 </button>
@@ -3151,6 +3610,9 @@
 
     function openAddSupplierModal() {
       const nextNum = (db.suppliers || []).length + 1;
+      document.getElementById('edit-sup-id').value = '';
+      document.getElementById('modal-sup-title').textContent = '🏭 Add New Goods Supplier';
+      document.getElementById('modal-sup-submit').textContent = 'Save Supplier to File';
       document.getElementById('new-sup-id').value = 'SUP-' + String(nextNum).padStart(2, '0');
       document.getElementById('new-sup-name').value = '';
       document.getElementById('new-sup-contact').value = '';
@@ -3161,32 +3623,84 @@
       openModal('modal-add-supplier');
     }
 
+    function editSupplier(supplierId) {
+      const s = (db.suppliers || []).find(x => x.id === supplierId || x.name === supplierId);
+      if (!s) return;
+      document.getElementById('edit-sup-id').value = s.id;
+      document.getElementById('modal-sup-title').textContent = `✏️ Edit Supplier Details (${s.id})`;
+      document.getElementById('modal-sup-submit').textContent = 'Update Supplier';
+      document.getElementById('new-sup-id').value = s.id;
+      document.getElementById('new-sup-name').value = s.name || '';
+      document.getElementById('new-sup-contact').value = s.contact || '';
+      document.getElementById('new-sup-phone').value = s.phone || '';
+      document.getElementById('new-sup-location').value = s.location || '';
+      document.getElementById('new-sup-terms').value = s.terms || 'Net 30';
+      document.getElementById('new-sup-notes').value = s.notes || '';
+      openModal('modal-add-supplier');
+    }
+
     async function handleSaveSupplier(e) {
       e.preventDefault();
+      const editId = (document.getElementById('edit-sup-id') ? document.getElementById('edit-sup-id').value.trim() : '');
       const name = document.getElementById('new-sup-name').value.trim();
       if (!name) return;
 
-      if ((db.suppliers || []).some(s => s.name.toLowerCase() === name.toLowerCase())) {
-        alert('A supplier with this name already exists.');
-        return;
-      }
-
-      const newSup = {
-        id: document.getElementById('new-sup-id').value.trim(),
-        name: name,
-        contact: document.getElementById('new-sup-contact').value.trim(),
-        phone: document.getElementById('new-sup-phone').value.trim(),
-        location: document.getElementById('new-sup-location').value.trim(),
-        terms: document.getElementById('new-sup-terms').value,
-        notes: document.getElementById('new-sup-notes').value.trim()
-      };
-
       if (!db.suppliers) db.suppliers = [];
-      db.suppliers.unshift(newSup);
 
-      closeModal('modal-add-supplier');
-      await saveData();
-      showToast(`Supplier "${newSup.name}" added successfully!`);
+      if (editId) {
+        // Edit mode
+        const s = db.suppliers.find(x => x.id === editId);
+        if (!s) return;
+        const oldName = s.name;
+
+        // Check if name was changed to another existing supplier
+        if (name.toLowerCase() !== oldName.toLowerCase() && db.suppliers.some(x => x.id !== editId && x.name.toLowerCase() === name.toLowerCase())) {
+          alert('Another supplier with this name already exists.');
+          return;
+        }
+
+        s.name = name;
+        s.contact = document.getElementById('new-sup-contact').value.trim();
+        s.phone = document.getElementById('new-sup-phone').value.trim();
+        s.location = document.getElementById('new-sup-location').value.trim();
+        s.terms = document.getElementById('new-sup-terms').value;
+        s.notes = document.getElementById('new-sup-notes').value.trim();
+
+        // If supplier name changed, update references in purchases and payments
+        if (oldName !== name) {
+          (db.supplierPurchases || []).forEach(p => {
+            if (p.supplierName === oldName) p.supplierName = name;
+          });
+          (db.supplierPayments || []).forEach(py => {
+            if (py.supplierName === oldName) py.supplierName = name;
+          });
+        }
+
+        closeModal('modal-add-supplier');
+        await saveData();
+        showToast(`Supplier "${name}" updated successfully!`);
+      } else {
+        // New supplier mode
+        if (db.suppliers.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+          alert('A supplier with this name already exists.');
+          return;
+        }
+
+        const newSup = {
+          id: document.getElementById('new-sup-id').value.trim(),
+          name: name,
+          contact: document.getElementById('new-sup-contact').value.trim(),
+          phone: document.getElementById('new-sup-phone').value.trim(),
+          location: document.getElementById('new-sup-location').value.trim(),
+          terms: document.getElementById('new-sup-terms').value,
+          notes: document.getElementById('new-sup-notes').value.trim()
+        };
+
+        db.suppliers.unshift(newSup);
+        closeModal('modal-add-supplier');
+        await saveData();
+        showToast(`Supplier "${newSup.name}" added successfully!`);
+      }
     }
 
     function openSupplierPurchaseModal(defaultSupplierName) {
@@ -3357,14 +3871,7 @@
 
       const amtElem = document.getElementById('spay-amount');
       if (amtElem) {
-        if (prefillAmount !== undefined && prefillAmount !== null && Number(prefillAmount) > 0) {
-          amtElem.value = Number(prefillAmount).toFixed(2);
-        } else if (defaultSupplierName) {
-          const bal = getSupplierBalance(defaultSupplierName);
-          amtElem.value = bal > 0 ? bal.toFixed(2) : '';
-        } else {
-          amtElem.value = '';
-        }
+        amtElem.value = '';
       }
 
       const refElem = document.getElementById('spay-ref');
@@ -3387,12 +3894,8 @@
         return;
       }
       const bal = getSupplierBalance(supName);
-      const amtElem = document.getElementById('spay-amount');
       if (bal > 0) {
         hint.textContent = `Outstanding Debt Owed to ${supName}: ${fmtMoney(bal)}`;
-        if (amtElem && !amtElem.value) {
-          amtElem.value = bal.toFixed(2);
-        }
       } else {
         hint.textContent = `All accounts settled with ${supName} (GH₵ 0.00 owed).`;
       }
@@ -4410,7 +4913,10 @@
             <td style="font-weight:800;">${fmtNum(p.stock)}</td>
             <td>${badge}</td>
             <td>
-              <button class="btn btn-secondary btn-sm" onclick="quickRestock('${p.id}')">+ Restock</button>
+              <div style="display:flex; gap:0.35rem; align-items:center;">
+                <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')" title="Edit product details & stock">✏️ Edit</button>
+                <button class="btn btn-secondary btn-sm" onclick="quickRestock('${p.id}')">+ Restock</button>
+              </div>
             </td>
           </tr>
         `;
@@ -4471,58 +4977,174 @@
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
     function openAddDealerModal() {
+      document.getElementById('edit-dlr-id').value = '';
+      document.getElementById('modal-dlr-title').textContent = '👤 Add New Wholesale Dealer';
+      document.getElementById('modal-dlr-submit').textContent = 'Save Dealer to File';
+      document.getElementById('new-dlr-name').value = '';
+      document.getElementById('new-dlr-contact').value = '';
+      document.getElementById('new-dlr-phone').value = '';
+      document.getElementById('new-dlr-location').value = '';
+      document.getElementById('new-dlr-terms').value = 'Net 30';
+      openModal('modal-add-dealer');
+    }
+
+    function editDealer(dealerId) {
+      const d = db.dealers.find(x => x.id === dealerId || x.name === dealerId);
+      if (!d) return;
+      document.getElementById('edit-dlr-id').value = d.id;
+      document.getElementById('modal-dlr-title').textContent = `✏️ Edit Dealer Information (${d.id})`;
+      document.getElementById('modal-dlr-submit').textContent = 'Update Dealer';
+      document.getElementById('new-dlr-name').value = d.name || '';
+      document.getElementById('new-dlr-contact').value = d.contact || '';
+      document.getElementById('new-dlr-phone').value = d.phone || '';
+      document.getElementById('new-dlr-location').value = d.location || '';
+      document.getElementById('new-dlr-terms').value = d.terms || 'Net 30';
       openModal('modal-add-dealer');
     }
 
     function handleSaveDealer(e) {
       e.preventDefault();
+      const editId = (document.getElementById('edit-dlr-id') ? document.getElementById('edit-dlr-id').value.trim() : '');
       const name = document.getElementById('new-dlr-name').value.trim();
       const contact = document.getElementById('new-dlr-contact').value.trim();
       const phone = document.getElementById('new-dlr-phone').value.trim();
       const location = document.getElementById('new-dlr-location').value.trim();
       const terms = document.getElementById('new-dlr-terms').value;
 
-      const newId = `DLR-0${db.dealers.length + 1}`;
-      db.dealers.unshift({
-        id: newId,
-        name: name,
-        contact: contact,
-        phone: phone,
-        location: location,
-        terms: terms
-      });
+      if (!name) return;
 
-      saveData();
-      closeModal('modal-add-dealer');
-      showToast(`Dealer ${name} added to top of list!`);
+      if (editId) {
+        // Edit mode
+        const d = db.dealers.find(x => x.id === editId);
+        if (!d) return;
+        const oldName = d.name;
+
+        // Check if renamed to another existing dealer
+        if (name.toLowerCase() !== oldName.toLowerCase() && db.dealers.some(x => x.id !== editId && x.name.toLowerCase() === name.toLowerCase())) {
+          alert('Another dealer with this name already exists.');
+          return;
+        }
+
+        d.name = name;
+        d.contact = contact;
+        d.phone = phone;
+        d.location = location;
+        d.terms = terms;
+
+        // If dealer name changed, update corresponding orders and payments
+        if (oldName !== name) {
+          (db.orders || []).forEach(o => {
+            if (o.dealerName === oldName) o.dealerName = name;
+          });
+          (db.payments || []).forEach(p => {
+            if (p.dealerName === oldName) p.dealerName = name;
+          });
+        }
+
+        saveData();
+        closeModal('modal-add-dealer');
+        showToast(`Dealer "${name}" updated successfully!`);
+      } else {
+        // New dealer mode
+        if (db.dealers.some(x => x.name.toLowerCase() === name.toLowerCase())) {
+          alert('A dealer with this name already exists.');
+          return;
+        }
+
+        const newId = `DLR-0${db.dealers.length + 1}`;
+        db.dealers.unshift({
+          id: newId,
+          name: name,
+          contact: contact,
+          phone: phone,
+          location: location,
+          terms: terms
+        });
+
+        saveData();
+        closeModal('modal-add-dealer');
+        showToast(`Dealer "${name}" added to top of list!`);
+      }
     }
 
     function openAddProductModal() {
+      document.getElementById('edit-prd-id').value = '';
+      document.getElementById('modal-prd-title').textContent = '📦 Add New Wholesale Product';
+      document.getElementById('modal-prd-submit').textContent = 'Save Product to File';
+      document.getElementById('lbl-prd-stock').textContent = 'Initial Stock Quantity';
+      document.getElementById('new-prd-name').value = '';
+      document.getElementById('new-prd-cat').value = '';
+      document.getElementById('new-prd-unit').value = '';
+      document.getElementById('new-prd-price').value = '';
+      document.getElementById('new-prd-stock').value = '50';
+      openModal('modal-add-product');
+    }
+
+    function editProduct(productId) {
+      const p = db.products.find(x => x.id === productId);
+      if (!p) return;
+      document.getElementById('edit-prd-id').value = p.id;
+      document.getElementById('modal-prd-title').textContent = `✏️ Edit Product & Stock (${p.id})`;
+      document.getElementById('modal-prd-submit').textContent = 'Update Product & Stock';
+      document.getElementById('lbl-prd-stock').textContent = 'Current Available Stock Quantity';
+      document.getElementById('new-prd-name').value = p.name || '';
+      document.getElementById('new-prd-cat').value = p.category || '';
+      document.getElementById('new-prd-unit').value = p.unit || '';
+      document.getElementById('new-prd-price').value = p.price !== undefined ? p.price : '';
+      document.getElementById('new-prd-stock').value = p.stock !== undefined ? p.stock : 0;
       openModal('modal-add-product');
     }
 
     function handleSaveProduct(e) {
       e.preventDefault();
+      const editId = (document.getElementById('edit-prd-id') ? document.getElementById('edit-prd-id').value.trim() : '');
       const name = document.getElementById('new-prd-name').value.trim();
       const category = document.getElementById('new-prd-cat').value.trim() || 'General';
       const unit = document.getElementById('new-prd-unit').value.trim();
       const price = Number(document.getElementById('new-prd-price').value || 0);
       const stock = Number(document.getElementById('new-prd-stock').value || 0);
 
-      const newId = `SKU-${1000 + db.products.length + 1}`;
-      db.products.unshift({
-        id: newId,
-        name: name,
-        category: category,
-        unit: unit,
-        price: price,
-        stock: stock,
-        reorderLevel: 20
-      });
+      if (!name) return;
 
-      saveData();
-      closeModal('modal-add-product');
-      showToast(`Product ${name} added to top of list!`);
+      if (editId) {
+        // Edit mode
+        const p = db.products.find(x => x.id === editId);
+        if (!p) return;
+        const oldName = p.name;
+
+        p.name = name;
+        p.category = category;
+        p.unit = unit;
+        p.price = price;
+        p.stock = stock;
+
+        // If product name changed, update existing orders referencing this name
+        if (oldName !== name) {
+          (db.orders || []).forEach(o => {
+            if (o.itemName === oldName) o.itemName = name;
+          });
+        }
+
+        saveData();
+        closeModal('modal-add-product');
+        showToast(`Product "${name}" and stock updated!`);
+      } else {
+        // New product mode
+        const newId = `SKU-${1000 + db.products.length + 1}`;
+        db.products.unshift({
+          id: newId,
+          name: name,
+          category: category,
+          unit: unit,
+          price: price,
+          stock: stock,
+          reorderLevel: 20
+        });
+
+        saveData();
+        closeModal('modal-add-product');
+        showToast(`Product "${name}" added to catalog!`);
+      }
     }
 
     function quickRestock(sku) {
@@ -4537,6 +5159,7 @@
     }
 
     function openPaymentModal() {
+      document.getElementById('pay-amount').value = '';
       openModal('modal-payment');
       updatePayModalHint();
     }
@@ -4544,7 +5167,7 @@
     function quickPayDealer(name, bal) {
       openModal('modal-payment');
       document.getElementById('pay-dealer').value = name;
-      document.getElementById('pay-amount').value = bal > 0 ? bal.toFixed(2) : '';
+      document.getElementById('pay-amount').value = '';
       updatePayModalHint();
     }
 
@@ -4689,6 +5312,146 @@
 
     function openFolder() {
       fetch('/api/open-folder', { method: 'POST' });
+    }
+
+    // ==========================================
+    // BACKUP & DATA SAFETY HUB
+    // ==========================================
+    function openBackupModal() {
+      // Update counts
+      document.getElementById('backup-stat-products').textContent = (db.products || []).length;
+      document.getElementById('backup-stat-dealers').textContent = (db.dealers || []).length;
+      document.getElementById('backup-stat-suppliers').textContent = (db.suppliers || []).length;
+      document.getElementById('backup-stat-orders').textContent = (db.orders || []).length;
+      document.getElementById('backup-stat-payments').textContent = (db.payments || []).length;
+
+      document.getElementById('modal-database-backup').classList.add('show');
+      fetchAndRenderBackupsList();
+    }
+
+    function downloadDatabaseJsonBackup() {
+      const jsonStr = JSON.stringify(db, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const now = new Date();
+      const dateTag = now.toISOString().slice(0, 10) + '_' + now.toTimeString().slice(0, 8).replace(/:/g, '-');
+      a.href = url;
+      a.download = `siaka_wholesale_data_backup_${dateTag}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('📥 Complete database backup downloaded!');
+    }
+
+    async function createManualBackupSnapshot() {
+      try {
+        const res = await fetch('/api/backup-now', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{}'
+        });
+        const result = await res.json();
+        if (result.status === 'ok') {
+          showToast('⚡ Instant snapshot created: ' + result.filename);
+          fetchAndRenderBackupsList();
+        } else {
+          alert('Could not create backup snapshot: ' + (result.message || 'Error'));
+        }
+      } catch (err) {
+        showToast('Snapshot trigger error: ' + err.message);
+      }
+    }
+
+    async function fetchAndRenderBackupsList() {
+      const container = document.getElementById('backups-list-container');
+      if (!container) return;
+      container.innerHTML = '<div style="padding:1rem; text-align:center; color:#94a3b8; font-size:0.85rem;">Checking Drive D backup folder...</div>';
+      
+      try {
+        const res = await fetch('/api/backups');
+        if (!res.ok) throw new Error('Failed to load');
+        let list = await res.json();
+        if (!Array.isArray(list)) list = [list].filter(Boolean);
+
+        if (list.length === 0) {
+          container.innerHTML = '<div style="padding:1.5rem; text-align:center; color:#94a3b8; font-size:0.85rem;">No previous snapshots found yet. They are created automatically on every save.</div>';
+          return;
+        }
+
+        container.innerHTML = list.map(item => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0.9rem; border-bottom:1px solid #e2e8f0; font-size:0.85rem;">
+            <div>
+              <div style="font-weight:700; color:#1e293b; font-family:monospace;">${item.name}</div>
+              <div style="font-size:0.75rem; color:#64748b;">${item.date} • ${(item.size / 1024).toFixed(1)} KB</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="restoreServerBackup('${item.name}')" style="font-size:0.75rem; padding:0.25rem 0.6rem; border-color:#f59e0b; color:#92400e;">
+              Restore This
+            </button>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = '<div style="padding:1rem; text-align:center; color:#ef4444; font-size:0.85rem;">Could not fetch backup list. Server may be in standalone offline mode.</div>';
+      }
+    }
+
+    async function restoreServerBackup(filename) {
+      if (!confirm(`Are you sure you want to restore from snapshot "${filename}"?\n\nA safety backup of your current database will be saved before restoring.`)) {
+        return;
+      }
+      try {
+        const res = await fetch('/api/restore-backup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename })
+        });
+        const result = await res.json();
+        if (result.status === 'ok') {
+          showToast('✅ Database successfully restored!');
+          await loadData();
+          closeModal('modal-database-backup');
+        } else {
+          alert('Restore failed: ' + (result.message || 'Error'));
+        }
+      } catch (err) {
+        alert('Error restoring backup: ' + err.message);
+      }
+    }
+
+    function handleRestoreFileChosen(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!Array.isArray(parsed.products) || !Array.isArray(parsed.dealers)) {
+            alert('Invalid database file format. Must contain products and dealers arrays.');
+            return;
+          }
+
+          if (!confirm(`Import and replace current database with ${file.name}?\n\nContains:\n• ${parsed.products.length} Products\n• ${parsed.dealers.length} Dealers\n• ${(parsed.orders || []).length} Orders`)) {
+            event.target.value = '';
+            return;
+          }
+
+          db = parsed;
+          if (!db.payments) db.payments = [];
+          if (!db.suppliers) db.suppliers = [];
+          if (!db.supplierPurchases) db.supplierPurchases = [];
+          if (!db.supplierPayments) db.supplierPayments = [];
+
+          await saveData();
+          showToast('✅ Database restored from ' + file.name);
+          closeModal('modal-database-backup');
+        } catch (err) {
+          alert('Could not read or parse JSON file: ' + err.message);
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file);
     }
 
     // Toast Alert

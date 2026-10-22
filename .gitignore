@@ -4,6 +4,11 @@ app/data/app_profile/
 
 # Temporary Office / Excel files
 ~$*.xlsx
+*.bak
+
+# Runtime Automated Backups
+app/data/backups/*.json
+!app/data/backups/.gitkeep
 
 # OS generated files
 Thumbs.db

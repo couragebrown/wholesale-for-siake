@@ -1,19 +1,158 @@
-# Wholesale App Backend Server
+# Siaka Wholesale Flow - Production Backend Server
+# Features: Self-Healing Storage, Atomic Writes, Automatic Rolling Backups, Zero Data Loss Protection
 param(
     [int]$Port = 49221
 )
 
-$baseDir = if ($PSScriptRoot) { $PSScriptRoot } else { "D:\excel\app" }
-$dataFile = Join-Path $baseDir "data\wholesale_data.json"
+$ErrorActionPreference = "Continue"
+
+# Dynamic Directory Setup
+$baseDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+if (-not $baseDir) { $baseDir = "D:\excel\app" }
+$rootDir = Split-Path -Parent $baseDir
+$dataDir = Join-Path $baseDir "data"
+$backupDir = Join-Path $dataDir "backups"
+$dataFile = Join-Path $dataDir "wholesale_data.json"
+$templateFile = Join-Path $dataDir "clean_schema_template.json"
 $htmlFile = Join-Path $baseDir "index.html"
-$excelExportPath = "D:\excel\Wholesale_Dealer_Management_System.xlsx"
+$excelExportPath = Join-Path $rootDir "Wholesale_Dealer_Management_System.xlsx"
+
+# Ensure all critical folders exist
+if (-not (Test-Path $dataDir)) { New-Item -ItemType Directory -Path $dataDir -Force | Out-Null }
+if (-not (Test-Path $backupDir)) { New-Item -ItemType Directory -Path $backupDir -Force | Out-Null }
+
+$defaultSchema = @'
+{
+  "products": [],
+  "dealers": [],
+  "orders": [],
+  "payments": [],
+  "suppliers": [],
+  "supplierPurchases": [],
+  "supplierPayments": []
+}
+'@
+
+# Ensure template exists
+if (-not (Test-Path $templateFile)) {
+    [System.IO.File]::WriteAllText($templateFile, $defaultSchema, [System.Text.Encoding]::UTF8)
+}
+
+# Function: Auto-Recover and return valid Database JSON string
+function Get-ValidDatabaseJson() {
+    # 1. Check primary data file
+    if (Test-Path $dataFile) {
+        try {
+            $raw = [System.IO.File]::ReadAllText($dataFile, [System.Text.Encoding]::UTF8)
+            if ($raw -and $raw.Trim().Length -gt 10) {
+                $test = $raw | ConvertFrom-Json
+                if ($test) { return $raw }
+            }
+        } catch {
+            Write-Warning "Primary data file corrupt or invalid: $_"
+        }
+    }
+
+    # 2. Try recovering from newest backup in backups folder
+    Write-Warning "Attempting automatic recovery from backups..."
+    $backups = Get-ChildItem -Path $backupDir -Filter "backup_*.json" | Sort-Object LastWriteTime -Descending
+    foreach ($bak in $backups) {
+        try {
+            $rawBak = [System.IO.File]::ReadAllText($bak.FullName, [System.Text.Encoding]::UTF8)
+            $testBak = $rawBak | ConvertFrom-Json
+            if ($testBak) {
+                Write-Host "Restored database from backup: $($bak.Name)"
+                [System.IO.File]::WriteAllText($dataFile, $rawBak, [System.Text.Encoding]::UTF8)
+                return $rawBak
+            }
+        } catch {}
+    }
+
+    # 3. Check for .bak fallback
+    $bakFile = Join-Path $dataDir "wholesale_data.bak"
+    if (Test-Path $bakFile) {
+        try {
+            $rawBak = [System.IO.File]::ReadAllText($bakFile, [System.Text.Encoding]::UTF8)
+            $testBak = $rawBak | ConvertFrom-Json
+            if ($testBak) {
+                Write-Host "Restored database from wholesale_data.bak"
+                [System.IO.File]::WriteAllText($dataFile, $rawBak, [System.Text.Encoding]::UTF8)
+                return $rawBak
+            }
+        } catch {}
+    }
+
+    # 4. Fallback to clean schema template
+    Write-Host "Initializing new clean database from template."
+    [System.IO.File]::WriteAllText($dataFile, $defaultSchema, [System.Text.Encoding]::UTF8)
+    return $defaultSchema
+}
+
+# Function: Safe Atomic Save with Automatic Versioned Rolling Backup
+function Save-DatabaseSafely([string]$jsonContent) {
+    if (-not $jsonContent -or $jsonContent.Trim().Length -lt 10) {
+        throw "Save rejected: Empty or invalid JSON payload."
+    }
+
+    # Validate JSON integrity before touching disk
+    $parsed = $jsonContent | ConvertFrom-Json
+    if (-not $parsed) {
+        throw "Save rejected: Payload is not valid JSON."
+    }
+
+    # Ensure data & backup directories exist
+    if (-not (Test-Path $dataDir)) { New-Item -ItemType Directory -Path $dataDir -Force | Out-Null }
+    if (-not (Test-Path $backupDir)) { New-Item -ItemType Directory -Path $backupDir -Force | Out-Null }
+
+    # Step A: Create versioned timestamped backup of current existing data
+    if (Test-Path $dataFile) {
+        try {
+            $currentData = [System.IO.File]::ReadAllText($dataFile, [System.Text.Encoding]::UTF8)
+            if ($currentData.Trim().Length -gt 10) {
+                $timeTag = Get-Date -Format "yyyyMMdd_HHmmss"
+                $snapshotPath = Join-Path $backupDir ("backup_" + $timeTag + ".json")
+                [System.IO.File]::WriteAllText($snapshotPath, $currentData, [System.Text.Encoding]::UTF8)
+                
+                # Also maintain immediate single-file rollback .bak
+                $bakPath = Join-Path $dataDir "wholesale_data.bak"
+                [System.IO.File]::WriteAllText($bakPath, $currentData, [System.Text.Encoding]::UTF8)
+            }
+        } catch {
+            Write-Warning "Could not create backup snapshot: $_"
+        }
+    }
+
+    # Step B: Atomic write to temporary file first
+    $tempFile = "$dataFile.tmp"
+    [System.IO.File]::WriteAllText($tempFile, $jsonContent, [System.Text.Encoding]::UTF8)
+
+    # Step C: Replace primary file
+    if (Test-Path $tempFile) {
+        Move-Item -Path $tempFile -Destination $dataFile -Force
+    }
+
+    # Step D: Prune older backups keeping last 100 snapshots
+    try {
+        $oldBackups = Get-ChildItem -Path $backupDir -Filter "backup_*.json" | Sort-Object LastWriteTime -Descending | Select-Object -Skip 100
+        if ($oldBackups) {
+            $oldBackups | ForEach-Object { Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
+        }
+    } catch {}
+
+    return $true
+}
+
+# Pre-initialize database file if not present
+$initialCheck = Get-ValidDatabaseJson
 
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://127.0.0.1:$Port/")
 
 try {
     $listener.Start()
-    Write-Host "Wholesale App Server running on http://127.0.0.1:$Port/"
+    Write-Host "Siaka Wholesale Flow Server running on http://127.0.0.1:$Port/"
+    Write-Host "Data storage: $dataFile"
+    Write-Host "Automated backups: $backupDir"
 } catch {
     Write-Error "Failed to start listener on port ${Port}: $_"
     exit 1
@@ -35,14 +174,11 @@ function Send-Response($context, [string]$content, [string]$contentType = "text/
         }
         $response.OutputStream.Close()
     } catch {
-        Write-Warning "Send-Response warning: $_"
         try { $context.Response.Abort() } catch {}
     }
 }
 
-
 function Export-ToExcel($jsonData) {
-    # Generate updated Excel file using native Excel COM
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
@@ -72,16 +208,20 @@ function Export-ToExcel($jsonData) {
         $wsProducts.Range("A1:F1").Font.Color = 16777215
 
         $r = 2
-        foreach ($p in $jsonData.products) {
-            $wsProducts.Cells.Item($r, 1).Value2 = [string]$p.id
-            $wsProducts.Cells.Item($r, 2).Value2 = [string]$p.category
-            $wsProducts.Cells.Item($r, 3).Value2 = [string]$p.name
-            $wsProducts.Cells.Item($r, 4).Value2 = [string]$p.unit
-            $wsProducts.Cells.Item($r, 5).Formula = "$($p.price)"
-            $wsProducts.Cells.Item($r, 6).Formula = "$($p.stock)"
-            $r++
+        if ($jsonData.products) {
+            foreach ($p in $jsonData.products) {
+                $wsProducts.Cells.Item($r, 1).Value2 = [string]$p.id
+                $wsProducts.Cells.Item($r, 2).Value2 = [string]$p.category
+                $wsProducts.Cells.Item($r, 3).Value2 = [string]$p.name
+                $wsProducts.Cells.Item($r, 4).Value2 = [string]$p.unit
+                $wsProducts.Cells.Item($r, 5).Formula = "$($p.price)"
+                $wsProducts.Cells.Item($r, 6).Formula = "$($p.stock)"
+                $r++
+            }
+            if ($r -gt 2) {
+                $wsProducts.Range("E2:E$($r-1)").NumberFormat = """GH₵ ""#,##0.00"
+            }
         }
-        $wsProducts.Range("E2:E$r").NumberFormat = """GH₵ ""#,##0.00"
         $wsProducts.Columns.AutoFit() | Out-Null
 
         # 2. Dealers
@@ -96,14 +236,16 @@ function Export-ToExcel($jsonData) {
         $wsDealers.Range("A1:F1").Font.Color = 16777215
 
         $r = 2
-        foreach ($d in $jsonData.dealers) {
-            $wsDealers.Cells.Item($r, 1).Value2 = [string]$d.id
-            $wsDealers.Cells.Item($r, 2).Value2 = [string]$d.name
-            $wsDealers.Cells.Item($r, 3).Value2 = [string]$d.contact
-            $wsDealers.Cells.Item($r, 4).Value2 = [string]$d.phone
-            $wsDealers.Cells.Item($r, 5).Value2 = [string]$d.location
-            $wsDealers.Cells.Item($r, 6).Value2 = [string]$d.terms
-            $r++
+        if ($jsonData.dealers) {
+            foreach ($d in $jsonData.dealers) {
+                $wsDealers.Cells.Item($r, 1).Value2 = [string]$d.id
+                $wsDealers.Cells.Item($r, 2).Value2 = [string]$d.name
+                $wsDealers.Cells.Item($r, 3).Value2 = [string]$d.contact
+                $wsDealers.Cells.Item($r, 4).Value2 = [string]$d.phone
+                $wsDealers.Cells.Item($r, 5).Value2 = [string]$d.location
+                $wsDealers.Cells.Item($r, 6).Value2 = [string]$d.terms
+                $r++
+            }
         }
         $wsDealers.Columns.AutoFit() | Out-Null
 
@@ -117,23 +259,26 @@ function Export-ToExcel($jsonData) {
         $wsOrders.Range("A1:L1").Font.Color = 16777215
 
         $r = 2
-        foreach ($o in $jsonData.orders) {
-            $wsOrders.Cells.Item($r, 1).Value2 = [string]$o.id
-            $wsOrders.Cells.Item($r, 2).Value2 = [string]$o.date
-            $wsOrders.Cells.Item($r, 3).Value2 = [string]$o.invoice
-            $wsOrders.Cells.Item($r, 4).Value2 = [string]$o.dealerName
-            $wsOrders.Cells.Item($r, 5).Value2 = [string]$o.itemName
-            $wsOrders.Cells.Item($r, 6).Value2 = [string]$o.unit
-            $wsOrders.Cells.Item($r, 7).Formula = "$($o.unitPrice)"
-            $wsOrders.Cells.Item($r, 8).Formula = "$($o.quantity)"
-            $wsOrders.Cells.Item($r, 9).Formula = "$($o.totalDue)"
-            $wsOrders.Cells.Item($r, 10).Formula = "$($o.amountPaid)"
-            $wsOrders.Cells.Item($r, 11).Formula = "$($o.balance)"
-            $wsOrders.Cells.Item($r, 12).Value2 = [string]$o.status
-            $r++
+        $hasOrders = ($jsonData.orders -and $jsonData.orders.Count -gt 0)
+        if ($hasOrders) {
+            foreach ($o in $jsonData.orders) {
+                $wsOrders.Cells.Item($r, 1).Value2 = [string]$o.id
+                $wsOrders.Cells.Item($r, 2).Value2 = [string]$o.date
+                $wsOrders.Cells.Item($r, 3).Value2 = [string]$o.invoice
+                $wsOrders.Cells.Item($r, 4).Value2 = [string]$o.dealerName
+                $wsOrders.Cells.Item($r, 5).Value2 = [string]$o.itemName
+                $wsOrders.Cells.Item($r, 6).Value2 = [string]$o.unit
+                $wsOrders.Cells.Item($r, 7).Formula = "$($o.unitPrice)"
+                $wsOrders.Cells.Item($r, 8).Formula = "$($o.quantity)"
+                $wsOrders.Cells.Item($r, 9).Formula = "$($o.totalDue)"
+                $wsOrders.Cells.Item($r, 10).Formula = "$($o.amountPaid)"
+                $wsOrders.Cells.Item($r, 11).Formula = "$($o.balance)"
+                $wsOrders.Cells.Item($r, 12).Value2 = [string]$o.status
+                $r++
+            }
+            $wsOrders.Range("G2:G$($r-1)").NumberFormat = """GH₵ ""#,##0.00"
+            $wsOrders.Range("I2:K$($r-1)").NumberFormat = """GH₵ ""#,##0.00"
         }
-        $wsOrders.Range("G2:G$r").NumberFormat = """GH₵ ""#,##0.00"
-        $wsOrders.Range("I2:K$r").NumberFormat = """GH₵ ""#,##0.00"
         $wsOrders.Columns.AutoFit() | Out-Null
 
         # 4. Payment History
@@ -159,19 +304,21 @@ function Export-ToExcel($jsonData) {
                 $wsPayments.Cells.Item($pr, 7).Value2 = [string]$py.note
                 $pr++
             }
-            $wsPayments.Range("D2:D$pr").NumberFormat = """GH₵ ""#,##0.00"
+            if ($pr -gt 2) {
+                $wsPayments.Range("D2:D$($pr-1)").NumberFormat = """GH₵ ""#,##0.00"
+            }
         }
         $wsPayments.Columns.AutoFit() | Out-Null
 
-        # 4.5. Suppliers
+        # 5. Suppliers Sheet
         $wsSuppliers = $wb.Sheets.Add([System.Reflection.Missing]::Value, $wsPayments)
         $wsSuppliers.Name = "Suppliers"
-        $supHeaders = @("Supplier ID", "Supplier / Company", "Contact Person", "Phone", "Location", "Terms", "Notes")
+        $supHeaders = @("Supplier ID", "Supplier Name", "Contact Person", "Phone", "Location", "Terms", "Notes")
         for ($c = 0; $c -lt $supHeaders.Length; $c++) {
             $wsSuppliers.Cells.Item(1, $c + 1).Value2 = $supHeaders[$c]
         }
         $wsSuppliers.Range("A1:G1").Font.Bold = $true
-        $wsSuppliers.Range("A1:G1").Interior.Color = 4210752
+        $wsSuppliers.Range("A1:G1").Interior.Color = 39372  # Amber/Orange
         $wsSuppliers.Range("A1:G1").Font.Color = 16777215
 
         $sr = 2
@@ -189,89 +336,40 @@ function Export-ToExcel($jsonData) {
         }
         $wsSuppliers.Columns.AutoFit() | Out-Null
 
-        # 4.6. Supplier Purchases
-        $wsPurchases = $wb.Sheets.Add([System.Reflection.Missing]::Value, $wsSuppliers)
-        $wsPurchases.Name = "Supplier Purchases"
-        $purHeaders = @("Purchase ID", "Date", "Supplier Name", "Product Name", "Quantity", "Unit Cost (GH₵)", "Total Due (GH₵)", "Amount Paid (GH₵)", "Balance Owed (GH₵)", "Status", "Notes")
-        for ($c = 0; $c -lt $purHeaders.Length; $c++) {
-            $wsPurchases.Cells.Item(1, $c + 1).Value2 = $purHeaders[$c]
-        }
-        $wsPurchases.Range("A1:K1").Font.Bold = $true
-        $wsPurchases.Range("A1:K1").Interior.Color = 5587251
-        $wsPurchases.Range("A1:K1").Font.Color = 16777215
-
-        $purR = 2
-        if ($jsonData.supplierPurchases) {
-            foreach ($pur in $jsonData.supplierPurchases) {
-                $wsPurchases.Cells.Item($purR, 1).Value2 = [string]$pur.id
-                $wsPurchases.Cells.Item($purR, 2).Value2 = [string]$pur.date
-                $wsPurchases.Cells.Item($purR, 3).Value2 = [string]$pur.supplierName
-                $wsPurchases.Cells.Item($purR, 4).Value2 = [string]$pur.itemName
-                $wsPurchases.Cells.Item($purR, 5).Formula = "$($pur.quantity)"
-                $wsPurchases.Cells.Item($purR, 6).Formula = "$($pur.unitCost)"
-                $wsPurchases.Cells.Item($purR, 7).Formula = "$($pur.totalDue)"
-                $wsPurchases.Cells.Item($purR, 8).Formula = "$($pur.amountPaid)"
-                $wsPurchases.Cells.Item($purR, 9).Formula = "$($pur.balance)"
-                $wsPurchases.Cells.Item($purR, 10).Value2 = [string]$pur.status
-                $wsPurchases.Cells.Item($purR, 11).Value2 = [string]$pur.notes
-                $purR++
-            }
-            $wsPurchases.Range("F2:I$purR").NumberFormat = """GH₵ ""#,##0.00"
-        }
-        $wsPurchases.Columns.AutoFit() | Out-Null
-
-        # 4.7. Supplier Payments
-        $wsSupPayments = $wb.Sheets.Add([System.Reflection.Missing]::Value, $wsPurchases)
-        $wsSupPayments.Name = "Supplier Payments"
-        $spayHeaders = @("Payment ID", "Date", "Supplier Name", "Amount Paid (GH₵)", "Method", "Reference", "Notes")
-        for ($c = 0; $c -lt $spayHeaders.Length; $c++) {
-            $wsSupPayments.Cells.Item(1, $c + 1).Value2 = $spayHeaders[$c]
-        }
-        $wsSupPayments.Range("A1:G1").Font.Bold = $true
-        $wsSupPayments.Range("A1:G1").Interior.Color = 10114859
-        $wsSupPayments.Range("A1:G1").Font.Color = 16777215
-
-        $spR = 2
-        if ($jsonData.supplierPayments) {
-            foreach ($spy in $jsonData.supplierPayments) {
-                $wsSupPayments.Cells.Item($spR, 1).Value2 = [string]$spy.id
-                $wsSupPayments.Cells.Item($spR, 2).Value2 = [string]$spy.date
-                $wsSupPayments.Cells.Item($spR, 3).Value2 = [string]$spy.supplierName
-                $wsSupPayments.Cells.Item($spR, 4).Formula = "$($spy.amount)"
-                $wsSupPayments.Cells.Item($spR, 5).Value2 = [string]$spy.method
-                $wsSupPayments.Cells.Item($spR, 6).Value2 = [string]$spy.reference
-                $wsSupPayments.Cells.Item($spR, 7).Value2 = [string]$spy.note
-                $spR++
-            }
-            $wsSupPayments.Range("D2:D$spR").NumberFormat = """GH₵ ""#,##0.00"
-        }
-        $wsSupPayments.Columns.AutoFit() | Out-Null
-
-        # 5. Dashboard KPIs
+        # 6. Dashboard KPIs
         $wsDash.Range("B2:E2").Merge()
         $wsDash.Range("B2").Value2 = "SIAKA WHOLESALE FLOW - PERFORMANCE SUMMARY"
         $wsDash.Range("B2").Font.Size = 14
         $wsDash.Range("B2").Font.Bold = $true
         
         $wsDash.Cells.Item(4, 2).Value2 = "Total Orders Count:"
-        $wsDash.Cells.Item(4, 3).Formula = "=COUNTA('Orders Ledger'!A2:A$r)"
         $wsDash.Cells.Item(5, 2).Value2 = "Total Revenue Billed:"
-        $wsDash.Cells.Item(5, 3).Formula = "=SUM('Orders Ledger'!I2:I$r)"
         $wsDash.Cells.Item(6, 2).Value2 = "Total Cash Collected:"
-        $wsDash.Cells.Item(6, 3).Formula = "=SUM('Orders Ledger'!J2:J$r)"
         $wsDash.Cells.Item(7, 2).Value2 = "Outstanding Debt Remaining:"
-        $wsDash.Cells.Item(7, 3).Formula = "=SUM('Orders Ledger'!K2:K$r)"
+
+        if ($hasOrders) {
+            $lastRow = $r - 1
+            $wsDash.Cells.Item(4, 3).Formula = "=COUNTA('Orders Ledger'!A2:A$lastRow)"
+            $wsDash.Cells.Item(5, 3).Formula = "=SUM('Orders Ledger'!I2:I$lastRow)"
+            $wsDash.Cells.Item(6, 3).Formula = "=SUM('Orders Ledger'!J2:J$lastRow)"
+            $wsDash.Cells.Item(7, 3).Formula = "=SUM('Orders Ledger'!K2:K$lastRow)"
+        } else {
+            $wsDash.Cells.Item(4, 3).Value2 = 0
+            $wsDash.Cells.Item(5, 3).Value2 = 0
+            $wsDash.Cells.Item(6, 3).Value2 = 0
+            $wsDash.Cells.Item(7, 3).Value2 = 0
+        }
+
         $wsDash.Range("C5:C7").NumberFormat = """GH₵ ""#,##0.00"
         $wsDash.Range("B4:C7").Font.Bold = $true
         $wsDash.Columns.AutoFit() | Out-Null
 
         $wsDash.Activate()
         $wb.SaveAs($excelExportPath, 51)
-        Write-Host "Exported to $excelExportPath"
         return $true
     }
     catch {
-        Write-Error "Excel export failed: $_"
+        Write-Error "Excel export error: $_"
         return $false
     }
     finally {
@@ -294,6 +392,7 @@ try {
                 continue
             }
 
+            # 1. Main Application Page
             if ($urlPath -eq "/" -or $urlPath -eq "/index.html") {
                 if (Test-Path $htmlFile) {
                     $html = [System.IO.File]::ReadAllText($htmlFile, [System.Text.Encoding]::UTF8)
@@ -302,6 +401,78 @@ try {
                     Send-Response $context "index.html not found" "text/plain" 404
                 }
             }
+            # 2. Database API: Load
+            elseif ($urlPath -eq "/api/data" -and $method -eq "GET") {
+                $json = Get-ValidDatabaseJson
+                Send-Response $context $json "application/json; charset=utf-8"
+            }
+            # 3. Database API: Safe Save (Atomic + Auto-Backup)
+            elseif ($urlPath -eq "/api/save" -and $method -eq "POST") {
+                $reader = New-Object System.IO.StreamReader($request.InputStream, $request.ContentEncoding)
+                $body = $reader.ReadToEnd()
+                $reader.Close()
+                
+                try {
+                    Save-DatabaseSafely $body | Out-Null
+                    Send-Response $context '{"status":"ok","message":"Database saved securely with auto-backup"}' "application/json"
+                } catch {
+                    Write-Error "Save error: $_"
+                    Send-Response $context "{\`"status\`":\`"error\`",\`"message\`":\`"$($_.Exception.Message)\`"}" "application/json" 500
+                }
+            }
+            # 4. Database API: List Backups
+            elseif ($urlPath -eq "/api/backups" -and $method -eq "GET") {
+                $backupList = @()
+                if (Test-Path $backupDir) {
+                    $files = Get-ChildItem -Path $backupDir -Filter "*.json" | Sort-Object LastWriteTime -Descending
+                    foreach ($f in $files) {
+                        $backupList += @{
+                            name = $f.Name
+                            size = $f.Length
+                            date = $f.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
+                        }
+                    }
+                }
+                $jsonBackups = $backupList | ConvertTo-Json -Depth 2
+                Send-Response $context $jsonBackups "application/json; charset=utf-8"
+            }
+            # 5. Database API: Manual Backup Trigger
+            elseif ($urlPath -eq "/api/backup-now" -and $method -eq "POST") {
+                try {
+                    $currJson = Get-ValidDatabaseJson
+                    $timeTag = Get-Date -Format "yyyyMMdd_HHmmss"
+                    $manualName = "manual_backup_$timeTag.json"
+                    $manualPath = Join-Path $backupDir $manualName
+                    [System.IO.File]::WriteAllText($manualPath, $currJson, [System.Text.Encoding]::UTF8)
+                    Send-Response $context "{\`"status\`":\`"ok\`",\`"filename\`":\`"$manualName\`",\`"message\`":\`"Manual backup snapshot created successfully\`"}" "application/json"
+                } catch {
+                    Send-Response $context "{\`"status\`":\`"error\`",\`"message\`":\`"$($_)\`"}" "application/json" 500
+                }
+            }
+            # 6. Database API: Restore from Specific Backup File
+            elseif ($urlPath -eq "/api/restore-backup" -and $method -eq "POST") {
+                $reader = New-Object System.IO.StreamReader($request.InputStream, $request.ContentEncoding)
+                $reqBody = $reader.ReadToEnd()
+                $reader.Close()
+                
+                try {
+                    $parsedReq = $reqBody | ConvertFrom-Json
+                    $targetFilename = $parsedReq.filename
+                    $targetFilePath = Join-Path $backupDir $targetFilename
+                    
+                    if (Test-Path $targetFilePath) {
+                        $contentToRestore = [System.IO.File]::ReadAllText($targetFilePath, [System.Text.Encoding]::UTF8)
+                        # Pre-restore safety backup of whatever exists right now
+                        Save-DatabaseSafely $contentToRestore | Out-Null
+                        Send-Response $context '{"status":"ok","message":"Database restored successfully"}' "application/json"
+                    } else {
+                        Send-Response $context '{"status":"error","message":"Backup file not found"}' "application/json" 404
+                    }
+                } catch {
+                    Send-Response $context "{\`"status\`":\`"error\`",\`"message\`":\`"$($_)\`"}" "application/json" 500
+                }
+            }
+            # 7. Print Statement Sync & View
             elseif ($urlPath -eq "/print_statement.html" -or $urlPath -eq "/statement.html") {
                 $pfile = Join-Path $baseDir "print_statement.html"
                 if (Test-Path $pfile) {
@@ -311,6 +482,68 @@ try {
                     Send-Response $context "No statement currently ready for printing" "text/plain" 404
                 }
             }
+            elseif ($urlPath -eq "/api/open-statement-print" -and $method -eq "POST") {
+                $reader = New-Object System.IO.StreamReader($request.InputStream, $request.ContentEncoding)
+                $body = $reader.ReadToEnd()
+                $reader.Close()
+                
+                $pfile = Join-Path $baseDir "print_statement.html"
+                [System.IO.File]::WriteAllText($pfile, $body, [System.Text.Encoding]::UTF8)
+                Send-Response $context '{"status":"ok"}' "application/json"
+            }
+            # 8. Excel Management
+            elseif ($urlPath -eq "/api/export-excel" -and $method -eq "POST") {
+                $reader = New-Object System.IO.StreamReader($request.InputStream, $request.ContentEncoding)
+                $body = $reader.ReadToEnd()
+                $reader.Close()
+                
+                $jsonData = $body | ConvertFrom-Json
+                $ok = Export-ToExcel $jsonData
+                if ($ok) {
+                    Send-Response $context "{\`"status\`":\`"ok\`",\`"path\`":\`"$([regex]::Escape($excelExportPath))\`"}" "application/json"
+                } else {
+                    Send-Response $context '{"status":"error","message":"Excel export failed"}' "application/json" 500
+                }
+            }
+            elseif ($urlPath -eq "/api/download-excel" -and ($method -eq "GET" -or $method -eq "HEAD")) {
+                if (Test-Path $excelExportPath) {
+                    $bytes = [System.IO.File]::ReadAllBytes($excelExportPath)
+                    $response = $context.Response
+                    $response.StatusCode = 200
+                    $response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    $response.Headers.Add("Content-Disposition", "attachment; filename=`"Siaka_Wholesale_Dealer_System.xlsx`"")
+                    $response.Headers.Add("Access-Control-Allow-Origin", "*")
+                    $response.ContentLength64 = $bytes.Length
+                    if ($method -ne "HEAD") {
+                        $response.OutputStream.Write($bytes, 0, $bytes.Length)
+                    }
+                    $response.OutputStream.Close()
+                } else {
+                    Send-Response $context "Excel file not found" "text/plain" 404
+                }
+            }
+            elseif ($urlPath -eq "/api/open-excel" -and $method -eq "POST") {
+                if (Test-Path $excelExportPath) {
+                    Start-Process "explorer.exe" -ArgumentList "/select,`"$excelExportPath`""
+                } else {
+                    Start-Process "explorer.exe" -ArgumentList "$rootDir"
+                }
+                Send-Response $context '{"status":"ok"}' "application/json"
+            }
+            elseif ($urlPath -eq "/api/open-save-dialog" -and $method -eq "POST") {
+                $dlgScript = Join-Path $baseDir "open_save_dialog.ps1"
+                if (Test-Path $dlgScript) {
+                    Start-Process "powershell.exe" -ArgumentList "-STA -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$dlgScript`""
+                } else {
+                    Start-Process "explorer.exe" -ArgumentList "$rootDir"
+                }
+                Send-Response $context '{"status":"ok"}' "application/json"
+            }
+            elseif ($urlPath -eq "/api/open-folder" -and $method -eq "POST") {
+                Start-Process "explorer.exe" -ArgumentList "$rootDir"
+                Send-Response $context '{"status":"ok"}' "application/json"
+            }
+            # 9. Static Assets (Images, Icons, Favicons)
             elseif ($urlPath -in @("/logo.png", "/icon.png", "/favicon.ico", "/icon.ico") -or $urlPath.EndsWith(".png") -or $urlPath.EndsWith(".ico")) {
                 $reqFile = Join-Path $baseDir ($urlPath.TrimStart("/\"))
                 if (Test-Path $reqFile) {
@@ -330,92 +563,11 @@ try {
                     Send-Response $context "File not found" "text/plain" 404
                 }
             }
-            elseif ($urlPath -eq "/api/data" -and $method -eq "GET") {
-                if (Test-Path $dataFile) {
-                    $json = [System.IO.File]::ReadAllText($dataFile, [System.Text.Encoding]::UTF8)
-                    Send-Response $context $json "application/json; charset=utf-8"
-                } else {
-                    Send-Response $context '{"products":[],"dealers":[],"orders":[]}' "application/json"
-                }
-            }
-            elseif ($urlPath -eq "/api/save" -and $method -eq "POST") {
-                $reader = New-Object System.IO.StreamReader($request.InputStream, $request.ContentEncoding)
-                $body = $reader.ReadToEnd()
-                $reader.Close()
-                
-                [System.IO.File]::WriteAllText($dataFile, $body, [System.Text.Encoding]::UTF8)
-                Send-Response $context '{"status":"ok","message":"Data saved to file successfully"}' "application/json"
-            }
-            elseif ($urlPath -eq "/api/export-excel" -and $method -eq "POST") {
-                $reader = New-Object System.IO.StreamReader($request.InputStream, $request.ContentEncoding)
-                $body = $reader.ReadToEnd()
-                $reader.Close()
-                
-                $jsonData = $body | ConvertFrom-Json
-                $ok = Export-ToExcel $jsonData
-                if ($ok) {
-                    Send-Response $context "{\`"status\`":\`"ok\`",\`"path\`":\`"$([regex]::Escape($excelExportPath))\`"}" "application/json"
-                } else {
-                    Send-Response $context '{"status":"error","message":"Excel export failed"}' "application/json" 500
-                }
-            }
-            elseif ($urlPath -eq "/api/download-excel" -and ($method -eq "GET" -or $method -eq "HEAD")) {
-                $exportFile = if (Test-Path $excelExportPath) { $excelExportPath } else { "D:\excel\Wholesale_Dealer_Management_System.xlsx" }
-                if (Test-Path $exportFile) {
-                    $bytes = [System.IO.File]::ReadAllBytes($exportFile)
-                    $response = $context.Response
-                    $response.StatusCode = 200
-                    $response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    $response.Headers.Add("Content-Disposition", "attachment; filename=`"Siaka_Wholesale_Dealer_System.xlsx`"")
-                    $response.Headers.Add("Access-Control-Allow-Origin", "*")
-                    $response.ContentLength64 = $bytes.Length
-                    if ($method -ne "HEAD") {
-                        $response.OutputStream.Write($bytes, 0, $bytes.Length)
-                    }
-                    $response.OutputStream.Close()
-                } else {
-                    Send-Response $context "Excel file not found" "text/plain" 404
-                }
-            }
-            elseif ($urlPath -eq "/api/open-excel" -and $method -eq "POST") {
-                $target = if (Test-Path $excelExportPath) { $excelExportPath } else { "D:\excel\Wholesale_Dealer_Management_System.xlsx" }
-                if (Test-Path $target) {
-                    Start-Process "explorer.exe" -ArgumentList "/select,`"$target`""
-                    Send-Response $context '{"status":"ok"}' "application/json"
-                } else {
-                    Start-Process "explorer.exe" -ArgumentList "D:\excel"
-                    Send-Response $context '{"status":"ok"}' "application/json"
-                }
-            }
-            elseif ($urlPath -eq "/api/open-save-dialog" -and $method -eq "POST") {
-                $dlgScript = Join-Path $baseDir "open_save_dialog.ps1"
-                if (Test-Path $dlgScript) {
-                    Start-Process "powershell.exe" -ArgumentList "-STA -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$dlgScript`""
-                    Send-Response $context '{"status":"ok"}' "application/json"
-                } else {
-                    Start-Process "explorer.exe" -ArgumentList "D:\excel"
-                    Send-Response $context '{"status":"ok"}' "application/json"
-                }
-            }
-            elseif ($urlPath -eq "/api/open-folder" -and $method -eq "POST") {
-                Start-Process "explorer.exe" -ArgumentList "D:\excel"
-                Send-Response $context '{"status":"ok"}' "application/json"
-            }
-            elseif ($urlPath -eq "/api/open-statement-print" -and $method -eq "POST") {
-                $reader = New-Object System.IO.StreamReader($request.InputStream, $request.ContentEncoding)
-                $body = $reader.ReadToEnd()
-                $reader.Close()
-                
-                $pfile = Join-Path $baseDir "print_statement.html"
-                [System.IO.File]::WriteAllText($pfile, $body, [System.Text.Encoding]::UTF8)
-                
-                Send-Response $context '{"status":"ok"}' "application/json"
-            }
             else {
                 Send-Response $context "Not Found" "text/plain" 404
             }
         } catch {
-            Write-Warning "Request processing error: $_"
+            Write-Warning "Request handling error: $_"
             try { $context.Response.Abort() } catch {}
         }
     }

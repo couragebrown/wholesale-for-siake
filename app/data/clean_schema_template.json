@@ -1,0 +1,145 @@
+﻿{
+  "products": [
+    {
+      "id": "SKU-1015",
+      "name": "Honor H600 Lite",
+      "category": "Phones",
+      "unit": "8 + 256G",
+      "price": 3995,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1014",
+      "name": "Honor X9e Pro",
+      "category": "Phones",
+      "unit": "8 + 256G",
+      "price": 4981,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1013",
+      "name": "Honor X9d",
+      "category": "Phones",
+      "unit": "12 + 256G",
+      "price": 4153,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1012",
+      "name": "Honor X7e Plus",
+      "category": "Phones",
+      "unit": "6 + 256G",
+      "price": 2903,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1011",
+      "name": "Honor X7e",
+      "category": "Phones",
+      "unit": "6 + 256G",
+      "price": 2413,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1010",
+      "name": "Honor X7e",
+      "category": "Phones",
+      "unit": "6 + 128G",
+      "price": 2188,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1009",
+      "name": "Honor X6c",
+      "category": "Phones",
+      "unit": "6 + 256G",
+      "price": 1929,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1008",
+      "name": "Honor X6c",
+      "category": "Phones",
+      "unit": "6 + 128G",
+      "price": 1864,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1007",
+      "name": "Honor X6e",
+      "category": "Phones",
+      "unit": "4 + 128G",
+      "price": 1958,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1006",
+      "name": "Honor X5c Plus",
+      "category": "Phones",
+      "unit": "4 + 128G",
+      "price": 1285,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1005",
+      "name": "Honor X5c",
+      "category": "Phones",
+      "unit": "4 + 64G",
+      "price": 1180,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1004",
+      "name": "Honor T10",
+      "category": "Phones",
+      "unit": "4 + 64G",
+      "price": 1088,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1003",
+      "name": "Honor T10",
+      "category": "Phones",
+      "unit": "3 + 32G",
+      "price": 896,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1002",
+      "name": "Honor Play 20C",
+      "category": "Phones",
+      "unit": "4 + 64G",
+      "price": 1285,
+      "stock": 5000,
+      "reorderLevel": 20
+    },
+    {
+      "id": "SKU-1001",
+      "name": "Honor Play 10",
+      "category": "Phones",
+      "unit": "4 + 64G",
+      "price": 999,
+      "stock": 5000,
+      "reorderLevel": 20
+    }
+  ],
+  "dealers": [],
+  "orders": [],
+  "payments": [],
+  "suppliers": [],
+  "supplierPurchases": [],
+  "supplierPayments": []
+}
